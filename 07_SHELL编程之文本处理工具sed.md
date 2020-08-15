@@ -1,7 +1,7 @@
 ---
-typora-root-url: ..\..\pictures
+
 ---
-[toc]
+[TOC]
 #课程目标
 
 - 掌握sed的基本语法结构

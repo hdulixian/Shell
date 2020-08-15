@@ -1,7 +1,7 @@
 ---
-typora-root-url: pictures
+
 ---
-[toc]
+[TOC]
 #课程目标
 
 - 熟悉awk的**命令行模式**基本语法结构

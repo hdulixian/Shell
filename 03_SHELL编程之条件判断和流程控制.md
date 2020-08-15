@@ -1,11 +1,10 @@
 ---
-typora-copy-images-to: pictures
-typora-root-url: ..\..\pictures
+
 ---
 [TOC]
 # 本节课程目标
 
-- 熟悉条件判断语句，如判断整数、判断字符串等
+- 熟悉条件判断语句，如整数判断、字符串判断等
 - 熟悉流程控制语句基本语法，如if…else…
 
 # 一、条件判断语法结构
@@ -16,7 +15,7 @@ typora-root-url: ..\..\pictures
 
 - 格式1： test 条件表达式
 - 格式2： [ 条件表达式 ]   
-- 格式3： [[ 条件表达式 ]]  支持正则 =~
+- 格式3： [[ 条件表达式 ]]     格式3支持正则
 
 **特别说明：**
 
@@ -36,7 +35,7 @@ typora-root-url: ..\..\pictures
 
 | 判断参数 | 含义                                   |
 | -------- | -------------------------------------- |
-| -e       | 判断文件是否存在（任何类型文件）       |
+| -e       | 判断文件是否存在                       |
 | -f       | 判断文件是否存在并且是一个普通文件     |
 | -d       | 判断文件是否存在并且是一个目录         |
 | -L       | 判断文件是否存在并且是一个软链接文件   |
@@ -49,10 +48,10 @@ typora-root-url: ..\..\pictures
 **举例说明：**
 
 ```powershell
-test -e file					只要文件存在条件为真
-[ -d /shell01/dir1 ]		 	判断目录是否存在，存在条件为真
-[ ! -d /shell01/dir1 ]		判断目录是否存在，不存在条件为真
-[[ -f /shell01/1.sh ]]		判断文件是否存在，并且是一个普通的文件
+test -e file							# 只要文件存在条件为真
+[ -d /shell01/dir1 ]		 	# 判断目录是否存在，存在条件为真
+[ ! -d /shell01/dir1 ]		# 判断目录是否存在，不存在条件为真
+[[ -f /shell01/1.sh ]]		# 判断文件是否存在，并且是一个普通的文件
 ```
 
 ### ㈡ 判断文件权限
@@ -89,12 +88,12 @@ test -e file					只要文件存在条件为真
 
 ### ㈤ 判断字符串
 
-| 判断参数           | 含义                                      |
-| ------------------ | ----------------------------------------- |
-| -z                 | 判断字符串是否为空，字符串长度为0则成立   |
-| -n                 | 判断字符串是否非空，字符串长度不为0则成立 |
-| string1 = string2  | 判断字符串是否相等                        |
-| string1 != string2 | 判断字符串是否相不等                      |
+| 判断参数           | 含义                 |
+| ------------------ | -------------------- |
+| -z                 | 判断字符串是否为空   |
+| -n                 | 判断字符串是否非空   |
+| string1 = string2  | 判断字符串是否相等   |
+| string1 != string2 | 判断字符串是否相不等 |
 
 ### ㈥ 多重条件判断
 
@@ -136,6 +135,7 @@ this is not admin
 
 ```powershell
 注意：在(( ))中，=表示赋值；==表示判断
+
 [root@server ~]# ((1==2));echo $?
 [root@server ~]# ((1<2));echo $?
 [root@server ~]# ((2>=1));echo $?
@@ -151,6 +151,7 @@ this is not admin
 
 ```powershell
 注意：双引号引起来，看作一个整体；= 和 == 在 [ 字符串 ] 比较中都表示判断
+
 [root@server ~]# a='hello world';b=world
 [root@server ~]# [ $a = $b ];echo $?
 [root@server ~]# [ "$a" = "$b" ];echo $?
@@ -159,10 +160,9 @@ this is not admin
 [root@server ~]# [ "$a" == "$b" ];echo $?
 [root@server ~]# test "$a" != "$b";echo $?
 
-
 test  表达式
 [ 表达式 ]
-[[ 表达式 ]]
+[[ 表达式 ]]h
 
 思考：[ ] 和 [[ ]] 有什么区别？
 
@@ -178,7 +178,6 @@ test  表达式
 2
 # [[ '' = $a ]];echo $?
 0
-
 
 [root@server ~]# [ 1 -eq 0 -a 1 -ne 0 ];echo $?
 [root@server ~]# [ 1 -eq 0 && 1 -ne 0 ];echo $?
@@ -203,44 +202,39 @@ test  表达式
 
 **箴言1：只要正确，就要一直向前冲:v:**
 
-**F**:表示false，为假
+**F** : 表示false，为假
 
-**T**:表示true，为真
+**T** : 表示true，为真
 
 ```powershell
-if [ condition ];then
-		command
-		command
+if test condition; then
+	commands
 fi
 
-if test 条件;then
-	命令
+if [ condition ]; then
+	commands
 fi
 
-if [[ 条件 ]];then
-	命令
+if [[ condition ]]; then
+	commands
 fi
 
-[ 条件 ] && command
+[ condition ] && command
 ```
-
-![流程判断1](./流程判断1.png)
 
 ### ㈡ if...else结构
 
 **箴言2：分叉路口，二选一**
 
 ```powershell
-if [ condition ];then
+if [ condition ]; then
 		command1
-	else
+else
 		command2
 fi
 
 [ 条件 ] && command1 || command2
 ```
-
-![流程判断2](/流程判断2.png)
 
 **小试牛刀：**
 
@@ -253,9 +247,9 @@ fi
 #!/bin/env bash
 
 read -p '请输入一个字符串:' str
-if [ "$str" = 'hello' ];then
+if [ "$str" = 'hello' ]; then
     echo 'world'
- else
+else
     echo '请输入hello!'
 fi
 
@@ -270,10 +264,10 @@ fi
   9 fi
   
   echo "该脚本需要传递参数"
-  1 if [ $1 = hello ];then
-  2         echo "hello"
+  1 if [ "$1" = "hello" ]; then
+  2     echo "hello"
   3 else
-  4         echo "请输入hello"
+  4     echo "请输入hello"
   5 fi
 
 #!/bin/env bash
@@ -282,15 +276,14 @@ A=hello
 B=world
 C=hello
 
-if [ "$1" = "$A" ];then
-        echo "$B"
-    else
-        echo "$C"
+if [ "$1" = "$A" ]; then
+    echo "$B"
+else
+    echo "$C"
 fi
 
-
 read -p '请输入一个字符串:' str;
- [ "$str" = 'hello' ] && echo 'world' ||  echo '请输入hello!'
+[ "$str" = 'hello' ] && echo 'world' ||  echo '请输入hello!'
 ```
 
 
@@ -302,42 +295,40 @@ read -p '请输入一个字符串:' str;
 ```powershell
 if [ condition1 ];then
 		command1  	结束
-	elif [ condition2 ];then
+elif [ condition2 ];then
 		command2   	结束
-	else
+else
 		command3
 fi
+
 注释：
 如果条件1满足，执行命令1后结束；如果条件1不满足，再看条件2，如果条件2满足执行命令2后结束；如果条件1和条件2都不满足执行命令3结束.
 ```
-
-![流程判断3](/流程判断3.png)
 
 ### ㈣ 层层嵌套结构
 
 **箴言4：多次判断，带你走出人生迷雾。**
 
 ```powershell
-if [ condition1 ];then
+if [ condition1 ]; then
 		command1		
-		if [ condition2 ];then
+		if [ condition2 ]; then
 			command2
 		fi
  else
-		if [ condition3 ];then
+		if [ condition3 ]; then
 			command3
-		elif [ condition4 ];then
+		elif [ condition4 ]; then
 			command4
 		else
 			command5
 		fi
 fi
+
 注释：
 如果条件1满足，执行命令1；如果条件2也满足执行命令2，如果不满足就只执行命令1结束；
 如果条件1不满足，不看条件2；直接看条件3，如果条件3满足执行命令3；如果不满足则看条件4，如果条件4满足执行命令4；否则执行命令5
 ```
-
-![流程判断4](/流程判断4.png)
 
 ## 2. 应用案例
 
@@ -363,15 +354,14 @@ read -p "请输入你要ping的主机的IP:" ip
 # 使用ping程序判断主机是否互通
 ping -c1 $ip &>/dev/null
 
-if [ $? -eq 0 ];then
+if [ $? -eq 0 ]; then
 	echo "当前主机和远程主机$ip是互通的"
- else
+else
  	echo "当前主机和远程主机$ip不通的"
 fi
 
 逻辑运算符
 test $? -eq 0 &&  echo "当前主机和远程主机$ip是互通的" || echo "当前主机和远程主机$ip不通的"
-
 ```
 
 ### ㈡ 判断一个进程是否存在
@@ -390,7 +380,7 @@ test $? -eq 0 &&  echo "当前主机和远程主机$ip是互通的" || echo "当
 #!/bin/env bash
 # 判断一个程序(httpd)的进程是否存在
 pgrep httpd &>/dev/null
-if [ $? -ne 0 ];then
+if [ $? -ne 0 ]; then
 	echo "当前httpd进程不存在"
 else
 	echo "当前httpd进程存在"
@@ -435,7 +425,6 @@ web_server=www.itcast.cn
 #访问网站
 wget -P /shell/ $web_server &>/dev/null
 [ $? -eq 0 ] && echo "当前网站服务是ok" && rm -f /shell/index.* || echo "当前网站服务不ok，请立刻处理"
-
 ```
 
 ##3. 课堂练习
@@ -448,7 +437,7 @@ wget -P /shell/ $web_server &>/dev/null
  #!/bin/env bash
   2 read -p "请输入一个用户名：" user_name
   3 id $user_name &>/dev/null
-  4 if [ $? -eq 0 ];then
+  4 if [ $? -eq 0 ]; then
   6     echo "该用户存在！"
   7 else
   8     echo "用户不存在！"
@@ -459,10 +448,10 @@ wget -P /shell/ $web_server &>/dev/null
 # 判断 用户（id） 是否存在
 read -p "输入壹个用户：" id
 id $id &> /dev/null
-if [ $? -eq 0 ];then
-        echo "该用户存在"
+if [ $? -eq 0 ]; then
+    echo "该用户存在"
 else
-        echo "该用户不存在"
+    echo "该用户不存在"
 fi
 
 #!/bin/env bash
