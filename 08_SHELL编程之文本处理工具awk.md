@@ -381,6 +381,8 @@ YUNWEI 511
 
 ##5. awk的脚本编程
 
+awk命令语法格式： awk 选项 '正则，地址定位{awk语句}'  文件名
+
 ### ㈠ 流程控制语句
 
 #### ① if结构
@@ -390,16 +392,15 @@ if [ xxx ]; then
 	xxx
 fi
 
-格式： awk 选项 '正则，地址定位{awk语句}'  文件名
-{ if(表达式)｛语句1; 语句2; ...｝}
+格式：{ if(表达式)｛语句1;语句2;...｝}
 
 awk -F: '{ if($3>=500 && $3<=60000) {print $1,$3} }' passwd
 
 [root@MissHou ~]# awk -F: '{ if($3==0) {print $1"是管理员"} }' passwd 
 root是管理员
 
-[root@MissHou ~]# awk 'BEGIN{ if($(id -u)==0) {print "admin"} }'
-admin
+[root@MissHou ~]# awk 'BEGIN{ if($(id -u)==0) {print "是管理员"} }'
+是管理员
 ```
 
 #### ② if...else结构
@@ -413,7 +414,7 @@ fi
 
 格式：{ if(表达式)｛语句;语句;...｝else｛语句;语句;...} }
 
-[root@MissHou ~]# awk -F: '{ if($3>=500 && $3 != 65534) {print $1"是普通用户"} else {print $1,"不是普通用户"} }' passwd 
+[root@MissHou ~]# awk -F: '{ if($3>=500 && $3!=65534) {print $1"是普通用户"} else {print $1"不是普通用户"} }' passwd 
 
 [root@MissHou ~]# awk 'BEGIN{ if( $(id -u)>=500 && $(id -u)!=65534 ) {print "是普通用户"} else {print "不是普通用户"} }'
 ```
@@ -429,15 +430,13 @@ else
 	xxxx
 fi
 
-if...else if...else语句格式：
-{ if(表达式1)｛语句;语句；...｝else if(表达式2)｛语句;语句；...｝else if(表达式3)｛语句;语句；...｝else｛语句;语句；...｝}
+格式：{ if(表达式1)｛语句;语句;...｝else if(表达式2)｛语句;语句;...｝else if(表达式3)｛语句;语句;...｝else｛语句;语句;...｝}
 
-[root@MissHou ~]# awk -F: '{ if($30) {print $1,":是管理员"} else if($3>=1 && $3<=499 || $365534 ) {print $1,":是系统用户"} else {print $1,":是普通用户"}}'
+[root@MissHou ~]# awk -F: '{ if($3==0) {print $1,"是管理员"} else if($3>=1 && $3<=499 || $3==65534) {print $1,"是系统用户"} else {print $1,"是普通用户"}}' a.txt 
 
-[root@MissHou ~]# awk -F: '{ if($30) {i++} else if($3>=1 && $3<=499 || $365534 ) {j++} else {k++}};END{print "管理员个数为:"i "\n系统用户个数为:"j"\n普通用户的个数为:"k }'
+[root@MissHou ~]# awk -F: '{ if($3==0) {i++} else if($3>=1 && $3<=499 || $3==65534 ) {j++} else {k++}};END{print "管理员个数为:"i"\n系统用户个数为:"j"\n普通用户的个数为:"k }' a.txt 
 
-[root@MissHou ~]# awk -F: '{if($30) {print $1,"is admin"} else if($3>=1 && $3<=499 || $365534) {print $1,"is sys users"} else {print $1,"is general user"} }' a.txt 
-
+[root@MissHou ~]# awk -F: '{if($3==0) {print $1,"is admin"} else if($3>=1 && $3<=499 || $3==65534) {print $1,"is sys users"} else {print $1,"is general user"} }' a.txt 
 root is admin
 bin is sys users
 daemon is sys users
@@ -449,22 +448,21 @@ named is sys users
 u01 is general user
 YUNWEI is general user
 
-[root@MissHou ~]# awk -F: '{  if($30) {print $1":管理员"} else if($3>=1 && $3<500 || $365534 ) {print $1":是系统用户"} else {print $1":是普通用户"}}'   /etc/passwd
+[root@MissHou ~]# awk -F: '{  if($3==0) {print $1":管理员"} else if($3>=1 && $3<500 || $3==65534) {print $1":是系统用户"} else {print $1":是普通用户"}}'   /etc/passwd
 
-[root@MissHou ~]# awk -F: '{if($30) {i++} else if($3>=1 && $3<500 || $365534){j++} else {k++}};END{print "管理员个数为:" i RS "系统用户个数为:"j RS "普通用户的个数为:"k }' /etc/passwd
+[root@MissHou ~]# awk -F: '{if($3==0) {i++} else if($3>=1 && $3<500 || $3==65534){j++} else {k++}};END{print "管理员个数为:" i RS "系统用户个数为:"j RS "普通用户的个数为:"k }' /etc/passwd
 管理员个数为:1
 系统用户个数为:28
 普通用户的个数为:27
 
+[root@MissHou ~]# awk -F: '{ if($3==0) {print $1":是管理员"} else if($3>=500 && $3!=65534) {print $1":是普通用户"} else {print $1":是系统用户"}}' passwd 
 
-[root@MissHou ~]# awk -F: '{ if($30) {print $1":是管理员"} else if($3>=500 && $3!=65534) {print $1":是普通用户"} else {print $1":是系统用户"}}' passwd 
+[root@MissHou ~]# awk -F: '{if($3==0){i++} else if($3>=500){k++} else{j++}} END{print i; print k; print j}' /etc/passwd
 
-[root@MissHou ~]# awk -F: '{if($30){i++} else if($3>=500){k++} else{j++}} END{print i; print k; print j}' /etc/passwd
-
-[root@MissHou ~]# awk -F: '{if($30){i++} else if($3>999){k++} else{j++}} END{print "管理员个数: "i; print "普通用个数: "k; print "系统用户: "j}' /etc/passwd 
+[root@MissHou ~]# awk -F: '{if($3==0){i++} else if($3>999){k++} else{j++}} END{print "管理员个数: "i; print "普通用个数: "k; print "系统用户: "j}' /etc/passwd 
 
 如果是普通用户打印默认shell，如果是系统用户打印用户名
-[root@MissHou ~]# awk -F: '{if($3>=1 && $3<500 || $3  65534) {print $1} else if($3>=500 && $3<=60000 ) {print $NF} }' /etc/passwd
+[root@MissHou ~]# awk -F: '{if($3>=1 && $3<500 || $3==65534) {print $1} else if($3>=500 && $3<=60000 ) {print $NF}}' /etc/passwd
 ```
 
 ### ㈡ 循环语句
@@ -516,14 +514,14 @@ done
 
 awk 'BEGIN{ for(y=1;y<=5;y++) {for(x=1;x<=y;x++) {printf x} ;print } }'
 
-[root@MissHou ~]# awk 'BEGIN { for(y=1;y<=5;y++) { for(x=1;x<=y;x++) {printf x};print} }'
+[root@MissHou ~]# awk 'BEGIN { for(y=1;y<=5;y++) { for(x=1;x<=y;x++) {printf x}; print} }'
 1
 12
 123
 1234
 12345
 
-[root@MissHou ~]# awk 'BEGIN{ y=1;while(y<=5) { for(x=1;x<=y;x++) {printf x};y++;print}}'
+[root@MissHou ~]# awk 'BEGIN{ y=1;while(y<=5) { for(x=1;x<=y;x++) {printf x}; y++; print}}'
 1
 12
 123
@@ -541,10 +539,10 @@ awk 'BEGIN{ for(y=1;y<=5;y++) {for(x=1;x<=y;x++) {printf x} ;print } }'
 循环的控制：
 break		条件满足的时候中断循环
 continue	条件满足的时候跳过循环
-[root@MissHou ~]# awk 'BEGIN{for(i=1;i<=5;i++) {if(i3) break;print i} }'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) {if(i3) break;print i} }'
 1
 2
-[root@MissHou ~]# awk 'BEGIN{for(i=1;i<=5;i++){if(i3) continue;print i}}'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) {if(i3) continue;print i} }'
 1
 2
 4
