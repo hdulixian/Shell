@@ -4,70 +4,58 @@
 [TOC]
 #课程目标
 
-- 掌握sed的基本语法结构
-- 熟悉sed常用的命令，如打印p，删除d，插入i等
+- 掌握sed命令的基本语法结构。
+- 熟悉sed命令常见用法，如打印p，删除d，插入i等。
 
-# 一、文件编辑器知多少
+#一、sed介绍
 
-- **Windows系统​**	
+## 1. sed可以用来做啥？
 
- ![edit](./edit.png)
-
-- **Linux系统**
-
-​	==vim	  vi==	 gedit  nano  emacs
-
-#二、强悍的sed介绍
-
-## 1. sed用来做啥？
-
-sed是Stream Editor（流编辑器）的缩写，简称流编辑器；用来==处理文件==的。
+sed是Stream Editor（流编辑器）的缩写，简称流编辑器，通常用于处理文本文件。
 
 ## 2. sed如何处理文件？
 
->  sed是==一行一行读取==文件内容并==按照要求==进行==处理==，把处理后的结果==输出到屏幕==。
+>  sed命令逐行读取文件内容并按照要求进行处理，再把处理后的结果输出到屏幕。
 
-![sed](./sed.png)
-
-1. 首先sed读取文件中的一行内容，把其保存在一个==临时缓存区中==（也称为模式空间）
-2. 然后==根据需求==处理临时缓冲区中的行，完成后把该行==发送到屏幕上==
+1. 首先sed读取文件中的一行内容，把其保存在一个临时缓存区中（也称为模式空间）
+2. 然后根据需求处理临时缓冲区中的行，完成后把该行打印到屏幕上
 
 **总结：**
 
-1. 由于sed把每一行都存在临时缓冲区中，对这个**副本**进行编辑，所以==不会直接修改原文件==
-2. Sed主要用来自动编辑一个或多个文件；简化对文件的反复操作,对文件进行过滤和转换操作
+1. 由于sed把每一行都存在临时缓冲区中，并对这个**副本**进行编辑，因此不会直接修改原文件
+2. sed主要用于自动编辑一个或多个文件，以简化对文件的反复操作，或者对文件进行过滤和转换操作
 
-#三、sed使用方法介绍
+#二、sed使用方法介绍
 
->  sed常见的语法格式有两种，一种叫==命令行==模式，另一种叫==脚本==模式。
+>  sed常见的语法格式有两种，一种叫命令行模式，另一种叫脚本模式。
 
 ## 1. 命令行格式
 
 ### ㈠ 语法格式
 
-sed  [options]    ==**'**==处理动作**=='==**   文件名
+sed  [options]  **'**处理动作**'**  文件名
 
 - **常用选项**
 
-| 选项   | 说明                   | 备注               |
-| ------ | ---------------------- | ------------------ |
-| -e     | 进行多项(多次)编辑     |                    |
-| ==-n== | 取消默认输出           | 不自动打印模式空间 |
-| ==-r== | 使用扩展==正则表达式== |                    |
-| ==-i== | 原地编辑（修改源文件） |                    |
-| -f     | 指定sed脚本的文件名    |                    |
+| 选项 | 说明                | 备注               |
+| ---- | ------------------- | ------------------ |
+| -e   | 进行多项(多次)编辑  |                    |
+| -n   | 取消默认输出        | 不自动打印模式空间 |
+| -r   | 使用扩展正则表达式  |                    |
+| -i   | 修改源文件          |                    |
+| -f   | 指定sed脚本的文件名 |                    |
 
-- **==常见处理动作==**
+- **常见处理动作**
 
-**丑话说在前面**：以下所有的==动作==都要在**单引号**里，你敢出轨，回家跪搓衣板
+**丑话说在前面**：以下所有的动作都要在**单引号**里，你敢出轨，回家跪搓衣板
 
-| 动作 | 说明                     | 备注             |
-| ---- | ------------------------ | ---------------- |
-| 'p'  | 打印                     |                  |
-| 'i'  | 在指定行==之前==插入内容 | 类似vim里的大写O |
-| 'a'  | 在指定行==之后==插入内容 | 类似vim里的小写o |
-| 'c'  | 替换指定行所有内容       |                  |
-| 'd'  | 删除指定行               |                  |
+| 动作 | 说明                 | 备注             |
+| ---- | -------------------- | ---------------- |
+| 'p'  | 打印                 |                  |
+| 'i'  | 在指定行之前插入内容 | 类似vim里的大写O |
+| 'a'  | 在指定行之后插入内容 | 类似vim里的小写o |
+| 'c'  | 替换指定行所有内容   |                  |
+| 'd'  | 删除指定行           |                  |
 
 ### ㈡ 举例说明
 
@@ -85,26 +73,26 @@ lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
 10.1.1.1
 ```
 
-#### ① 对文件进行==增、删、改、查==操作
+#### ① 对文件进行增、删、改、查操作
 
-> 语法：sed  选项    **=='==**定位+命令**=='==**    需要处理的文件
+> 语法：sed  [选项]  **'**定位+动作**'**  文件
 
 ##### 1）打印文件内容
 
+​	打印动作通常搭配-n选项
+
 ```powershell
-[root@server ~]# sed ''  a.txt						对文件什么都不做
-[root@server ~]# sed -n 'p'  a.txt					打印每一行，并取消默认输出
-[root@server ~]# sed -n '1p'  a.txt					打印第1行
-[root@server ~]# sed -n '2p'  a.txt					打印第2行
-[root@server ~]# sed -n '1,5p'  a.txt				打印1到5行
+[root@server ~]# sed '' a.txt								对文件什么都不做
+[root@server ~]# sed -n 'p' a.txt						打印每一行，并取消默认输出
+[root@server ~]# sed -n '1p' a.txt					打印第1行（注意：不能用^p打印第一行）
+[root@server ~]# sed -n '2p' a.txt					打印第2行
+[root@server ~]# sed -n '1,5p' a.txt				打印1到5行
 [root@server ~]# sed -n '$p' a.txt 					打印最后1行
 ```
 
 ##### 2）增加文件内容
 
-i    地址定位的上面插入
-
-a   下面插入
+​	i  表示前面插入	a 表示后面插入
 
 ```powershell
 [root@server ~]# sed '$a99999' a.txt 				文件最后一行下面增加内容
@@ -113,18 +101,18 @@ a   下面插入
 [root@server ~]# sed '$i99999' a.txt 				文件最后一行上一行增加内容
 [root@server ~]# sed 'i99999' a.txt 				文件每行上一行增加内容
 [root@server ~]# sed '6i99999' a.txt 				文件第6行上一行增加内容
-[root@server ~]# sed '/^uucp/ihello'				以uucp开头行的上一行插入内容
+[root@server ~]# sed '/^uucp/ihello'				以uucp开头的行的上一行插入内容
 ```
 
-##### 3）修改文件内容
+##### 3）修改文件内容（行替换）
 
-c   替换指定的==整行==内容
+​	c   替换指定的整行内容
 
 ```powershell
 [root@server ~]# sed '5chello world' a.txt 		替换文件第5行内容
-[root@server ~]# sed 'chello world' a.txt 		替换文件所有内容
-[root@server ~]# sed '1,5chello world' a.txt 	替换文件1到5号内容为hello world
-[root@server ~]# sed '/^user01/c888888' a.txt	替换以user01开头的行
+[root@server ~]# sed 'chello world' a.txt 		替换文件所有行的内容
+[root@server ~]# sed '1,5chello world' a.txt 	1到5行的内容整体替换为hello world（非逐行替换）
+[root@server ~]# sed '/^user01/c888888' a.txt	替换以user01开头的行（替换操作中正则表达式使用//分隔）
 ```
 
 ##### 4）删除文件内容
@@ -132,40 +120,32 @@ c   替换指定的==整行==内容
 ```powershell
 [root@server ~]# sed '1d' a.txt 						删除文件第1行
 [root@server ~]# sed '1,5d' a.txt 					删除文件1到5行
-[root@server ~]# sed '$d' a.txt						删除文件最后一行
+[root@server ~]# sed '$d' a.txt							删除文件最后一行
 ```
 
-#### ② ==对文件进行搜索替换操作==
+#### ② 对文件进行部分搜索替换操作
 
-> 语法：sed   选项   **'==s/搜索的内容/替换的内容/动作=='**  需要处理的文件
+> 语法：sed   [选项]   **'s/搜索的内容/替换的内容/动作'**  文件
 >
-> 其中，==**s**==表示search搜索；斜杠==**/**==表示分隔符，可以自己定义;动作一般是打印==**p**==和全局替换==**g**==
+> 其中，**s**表示search搜索，斜杠**/**表示分隔符，可以自己定义，动作一般是打印**p**和全行替换**g**
 
 ```powershell
-[root@server ~]# sed -n 's/root/ROOT/p' 1.txt 
-[root@server ~]# sed -n 's/root/ROOT/gp' 1.txt 
-[root@server ~]# sed -n 's/^#//gp' 1.txt 
-[root@server ~]# sed -n 's@/sbin/nologin@itcast@gp' a.txt
-[root@server ~]# sed -n 's/\/sbin\/nologin/itcast/gp' a.txt
-[root@server ~]# sed -n '10s#/sbin/nologin#itcast#p' a.txt 
-uucp:x:10:14:uucp:/var/spool/uucp:itcast
-[root@server ~]# sed -n 's@/sbin/nologin@itcastheima@p' 2.txt 
-注意：搜索替换中的分隔符可以自己指定
+sed -n 's/root/ROOT/p' 1.txt
+sed -n 's/root/ROOT/gp' 1.txt 
+sed -n 's/^#//gp' 1.txt # 取消注释
+sed -n 's/^/#/p' a.txt 	# 注释文件内容
 
-[root@server ~]# sed -n '1,5s/^/#/p' a.txt 		注释掉文件的1-5行内容
-#root:x:0:0:root:/root:/bin/bash
-#bin:x:1:1:bin:/bin:/sbin/nologin
-#daemon:x:2:2:daemon:/sbin:/sbin/nologin
-#adm:x:3:4:adm:/var/adm:/sbin/nologin
-#lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+sed -n 's@/sbin/nologin@itcast@gp' a.txt   # 注意：搜索替换中的分隔符可以自己指定
+sed -n '10s#/sbin/nologin#itcast#p' a.txt 
+sed -n 's/\/sbin\/nologin/itcast/gp' a.txt
 ```
 
 #### ③ 其他命令
 
 | 命令 | 解释                                       | 备注         |
 | ---- | ------------------------------------------ | ------------ |
-| r    | 从另外文件中读取内容                       |              |
-| w    | 内容另存为                                 |              |
+| r    | 从其它文件中读取内容，放到指定位置之后     |              |
+| w    | 将选定的行存储到其他文件中                 |              |
 | &    | 保存查找串以便在替换串中引用               | 和\\(\\)相同 |
 | =    | 打印行号                                   |              |
 | ！   | 对所选行以外的所有行应用命令，放到行数之后 | '1,5!'       |
@@ -174,8 +154,6 @@ uucp:x:10:14:uucp:/var/spool/uucp:itcast
 **举例说明：**
 
 ~~~powershell
-r	从文件中读取输入行
-w	将所选的行写入文件
 [root@server ~]# sed '3r /etc/hosts' 2.txt 
 [root@server ~]# sed '$r /etc/hosts' 2.txt
 [root@server ~]# sed '/root/w a.txt' 2.txt 
@@ -183,48 +161,39 @@ w	将所选的行写入文件
 [root@server ~]# sed  -r '/([0-9]{1,3}\.){3}[0-9]{1,3}/w b.txt' 2.txt
 
 !	对所选行以外的所有行应用命令，放到行数之后
-[root@server ~]# sed -n '1!p' 1.txt 
 [root@server ~]# sed -n '4p' 1.txt 
 [root@server ~]# sed -n '4!p' 1.txt 
-[root@server ~]# cat -n 1.txt 
 [root@server ~]# sed -n '1,17p' 1.txt 
 [root@server ~]# sed -n '1,17!p' 1.txt 
 
-&   保存查找串以便在替换串中引用   \(\)
-
+& 保存查找串以便在替换串中引用  \(\)
 [root@server ~]# sed -n '/root/p' a.txt 
 root:x:0:0:root:/root:/bin/bash
 [root@server ~]# sed -n 's/root/#&/p' a.txt 
 #root:x:0:0:root:/root:/bin/bash
+[root@server ~]# sed -n 's/root/#&/gp' a.txt 
+#root:x:0:0:#root:/#root:/bin/bash
 
-# sed -n 's/^root/#&/p' passwd   注释掉以root开头的行
-# sed -n -r 's/^root|^stu/#&/p' /etc/passwd	注释掉以root开头或者以stu开头的行
-# sed -n '1,5s/^[a-z].*/#&/p' passwd  注释掉1~5行中以任意小写字母开头的行
-# sed -n '1,5s/^/#/p' /etc/passwd  注释1~5行
-或者
-sed -n '1,5s/^/#/p' passwd 以空开头的加上#
-sed -n '1,5s/^#//p' passwd 以#开头的替换成空
+sed -n 's/^root/#&/p' passwd   # 注释以root开头的行
+sed -n -r 's/^root|^stu/#&/p' passwd	# 注释以root开头或者以stu开头的行
+sed -n '1,5s/^[a-z].*/#&/p' passwd  # 注释掉1~5行中以任意小写字母开头的行
+sed -n '1,5s/^/#/p' passwd  # 注释1~5行
+sed -n '1,5s/^#//p' passwd  # 取消1~5行的注释
+sed -n '/^root/p' 1.txt  # 打印以root开头的行
+sed -n 's/^root/#&/p' 1.txt  # 注释以root开头的行
+sed -n 's/\(^root\)/#\1/p' 1.txt 
+sed -nr '/^root|^stu/p' 1.txt 
+sed -nr 's/^root|^stu/#&/p' 1.txt 
 
-[root@server ~]# sed -n '/^root/p' 1.txt 
-[root@server ~]# sed -n 's/^root/#&/p' 1.txt 
-[root@server ~]# sed -n 's/\(^root\)/#\1/p' 1.txt 
-[root@server ~]# sed -nr '/^root|^stu/p' 1.txt 
-[root@server ~]# sed -nr 's/^root|^stu/#&/p' 1.txt 
-
-
-= 	打印行号
-# sed -n '/bash$/=' passwd    打印以bash结尾的行的行号
-# sed -ne '/root/=' -ne '/root/p' passwd 
-# sed -n '/nologin$/=;/nologin$/p' 1.txt
-# sed -ne '/nologin$/=' -ne '/nologin$/p' 1.txt
+= 打印行号
+sed -n '/bash$/=' passwd    # 打印以bash结尾的行的行号
+sed -n '/nologin$/=; /nologin$/p' 1.txt
+sed -ne '/nologin$/=' -ne '/nologin$/p' 1.txt
 
 q	退出
-# sed '5q' 1.txt
-# sed '/mail/q' 1.txt
-# sed -r '/^yunwei|^mail/q' 1.txt
-[root@server ~]# sed -n '/bash$/p;10q' 1.txt
-ROOT:x:0:0:root:/root:/bin/bash
-
+sed '5q' 1.txt  # 打印完第5行后退出
+sed '/mail/q' 1.txt
+sed -r '/^yunwei|^mail/q' 1.txt
 
 综合运用：
 [root@server ~]# sed -n '1,5s/^/#&/p' 1.txt 
@@ -246,7 +215,7 @@ ROOT:x:0:0:root:/root:/bin/bash
 
 ```powershell
 -e 多项编辑
--r	扩展正则
+-r 扩展正则
 -i 修改原文件
 
 [root@server ~]# sed -ne '/root/p' 1.txt -ne '/root/='
@@ -256,13 +225,12 @@ root:x:0:0:root:/root:/bin/bash
 1
 root:x:0:0:root:/root:/bin/bash
 
-在1.txt文件中的第5行的前面插入“hello world”;在1.txt文件的第8行下面插入“哈哈哈哈”
-
+在1.txt文件中的第5行的前面插入“hello world”; 在1.txt文件的第8行下面插入“哈哈哈哈”
 [root@server ~]# sed -e '5ihello world' -e '8a哈哈哈哈哈' 1.txt  -e '5=;8='
 
-sed -n '1,5p' 1.txt
-sed -ne '1p' -ne '5p' 1.txt
-sed -ne '1p;5p' 1.txt
+sed -n '1,5p' 1.txt  # 打印1~5行
+sed -ne '1p' -ne '5p' 1.txt  # 打印第第1行和5行
+sed -ne '1p;5p' 1.txt  # 打印第1行和第5行
 
 过滤vsftpd.conf文件中以#开头和空行：
 [root@server ~]# grep -Ev '^#|^$' /etc/vsftpd/vsftpd.conf
@@ -274,11 +242,8 @@ sed -ne '1p;5p' 1.txt
 # sed -e '/^#/d' -e '/^;/d' -e '/^$/d' -e '/^\t$/d' -e '/^\t#/d' smb.conf
 # sed -r '/^(#|$|;|\t#|\t$)/d' smb.conf 
 
-# sed -e '/^#/d' -e '/^;/d' -e '/^$/d' -e '/^\t$/d' -e '/^\t#/' smb.conf
-
 
 [root@server ~]# grep '^[^a-z]' 1.txt
-
 [root@server ~]# sed -n '/^[^a-z]/p' 1.txt
 
 过滤出文件中的IP地址：
@@ -287,64 +252,31 @@ sed -ne '1p;5p' 1.txt
 [root@server ~]# sed -nr '/([0-9]{1,3}\.){3}[0-9]{1,3}/p' 1.txt 
 192.168.0.254
 
-[root@server ~]# grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 2.txt 
-10.1.1.1
-10.1.1.255
-255.255.255.0
-
-[root@server ~]# sed -nr '/([0-9]{1,3}\.){3}[0-9]{1,3}/p' 2.txt
-10.1.1.1
-10.1.1.255
-255.255.255.0
-过滤出ifcfg-eth0文件中的IP、子网掩码、广播地址
-[root@server shell06]# grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' ifcfg-eth0 
-10.1.1.1
-255.255.255.0
-10.1.1.254
-[root@server shell06]# sed -nr '/([0-9]{1,3}\.){3}[0-9]{1,3}/p' ifcfg-eth0|cut -d'=' -f2
-10.1.1.1
-255.255.255.0
-10.1.1.254
-[root@server shell06]# sed -nr '/([0-9]{1,3}\.){3}[0-9]{1,3}/p' ifcfg-eth0|sed -n 's/[A-Z=]//gp'
-10.1.1.1
-255.255.255.0
-10.1.1.254
-
-[root@server shell06]# ifconfig eth0|sed -n '2p'|sed -n 's/[:a-Z]//gp'|sed -n 's/ /\n/gp'|sed '/^$/d'
-10.1.1.1
-10.1.1.255
-255.255.255.0
-[root@server shell06]# ifconfig | sed -nr '/([0-9]{1,3}\.)[0-9]{1,3}/p' | head -1|sed -r 's/([a-z:]|[A-Z/t])//g'|sed 's/ /\n/g'|sed  '/^$/d'
-
-[root@server shell06]# ifconfig eth0|sed -n '2p'|sed -n 's/.*addr:\(.*\) Bcast:\(.*\) Mask:\(.*\)/\1\n\2\n\3/p'
-10.1.1.1 
-10.1.1.255 
-255.255.255.0
 
 -i 选项  直接修改原文件
-# sed -i 's/root/ROOT/;s/stu/STU/' 11.txt
+# sed -i 's/root/ROOT/;s/stu/STU/' 1.txt
 # sed -i '17{s/YUNWEI/yunwei/;s#/bin/bash#/sbin/nologin#}' 1.txt
 # sed -i '1,5s/^/#&/' a.txt
 注意：
--ni  不要一起使用
-p命令 不要再使用-i时使用
+  -n和-i不要一起使用
+  p命令不要再使用-i时使用
 ```
 
-#### ⑤ ==sed结合正则使用==
+#### ⑤ sed结合正则使用
 
-> sed  选项  =='==sed==命令==或者==正则表达式==或者==地址定位===='==  文件名
+> sed  选项  'sed命令或者正则表达式或者地址定位'  文件名
 
 1. 定址用于决定对哪些行进行编辑。地址的形式可以是数字、正则表达式、或二者的结合。
 2. 如果没有指定地址，sed将处理输入文件的所有行。
 
-| 正则          | 说明                                                         | 备注                             |
-| ------------- | ------------------------------------------------------------ | -------------------------------- |
-| /key/         | 查询包含关键字的行                                           | sed -n '/root/p' 1.txt           |
-| /key1/,/key2/ | 匹配包含两个关键字之间的行                                   | sed -n '/\^adm/,/^mysql/p' 1.txt |
-| /key/,x       | 从匹配关键字的行开始到==文件第x行==之间的行（包含关键字所在行） | sed -n '/^ftp/,7p'               |
-| x,/key/       | 从文件的第x行开始到与关键字的匹配行之间的行                  |                                  |
-| x,y!          | 不包含x到y行                                                 |                                  |
-| /key/!        | 不包括关键字的行                                             | sed -n '/bash$/!p' 1.txt         |
+| 正则          | 说明                                                  | 备注                            |
+| ------------- | ----------------------------------------------------- | ------------------------------- |
+| /key/         | 查询包含关键字的行                                    | sed -n '/root/p' 1.txt          |
+| /key1/,/key2/ | 匹配包含两个关键字之间的行（闭区间）                  | sed -n '/^adm/,/^mysql/p' 1.txt |
+| /key/,x       | 从匹配关键字的行开始到文件第x行之间的行（闭区间）     | sed -n '/^ftp/,7p'              |
+| x,/key/       | 从文件的第x行开始到与关键字的匹配行之间的行（闭区间） |                                 |
+| x,y!          | 不包含x到y行（闭区间）                                |                                 |
+| /key/!        | 不包括关键字的行                                      | sed -n '/bash$/!p' 1.txt        |
 
 ##2. 脚本格式
 
@@ -372,7 +304,6 @@ p
 ３）　如果在一行中有多个命令，应该用分号分隔。
 ４）　不需要且不可用引号保护命令
 ５）　#号开头的行为注释
-
 ~~~
 
 ### ㈢举例说明
@@ -392,6 +323,7 @@ $a\
 we inster new line
 s/^[a-z].*/#&/
 
+
 [root@server ~]# cat 1.sed 
 #!/bin/sed -f
 3a**********************
@@ -406,7 +338,6 @@ $chelloworld
 **********************
 adm:x:3:4:adm:/var/adm:/sbin/nologin
 helloworld
-
 ~~~
 
 ##3. 补充扩展总结
@@ -469,10 +400,9 @@ sed 's/.$//' a.txt					删除每一行中的最后一个字符
 7 u
 8 k
 9 o
-
 ~~~
 
-#四、课堂练习
+#三、课堂练习
 
 1. 将任意数字替换成空或者制表符
 2. 去掉文件1-5行中的数字、冒号、斜杠
@@ -483,7 +413,6 @@ sed 's/.$//' a.txt					删除每一行中的最后一个字符
 7. 注释掉文件的2-3行和匹配到以root开头或者以ftp开头的行
 
 ~~~powershell
-
 1、将文件中任意数字替换成空或者制表符
 2、去掉文件1-5行中的数字、冒号、斜杠
 3、匹配root关键字的行替换成hello itcast，并保存到test.txt文件中
@@ -508,7 +437,7 @@ sed 's/.$//' a.txt					删除每一行中的最后一个字符
 # sed -nr '1,2s/^/#&/gp;s/^lp|^mail/#&/gp' a.txt
 ~~~
 
-#五、课后实战
+#四、课后实战
 
 1、写一个初始化系统的脚本
 1）自动修改主机名（如：ip是192.168.0.88，则主机名改为server88.itcast.cc）

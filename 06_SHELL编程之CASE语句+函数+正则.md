@@ -1,4 +1,4 @@
-[toc]
+[TOC]
 #课程目标
 
 - 掌握case语句的基本语法结构
@@ -7,94 +7,83 @@
 
 # 一、case语句
 
-**关键词：确认过眼神，你是对的人**:couple_with_heart:
-
 1. case语句为多重匹配语句
-2. 如果匹配成功，执行相匹配的命令
+2. 如果匹配成功，则执行相匹配的命令
 
 ## 1. 语法结构
 
 ~~~powershell
-说明：pattern表示需要匹配的模式
-
-
-case var in             定义变量;var代表是变量名
-pattern 1)              模式1;用 | 分割多个模式，相当于or
-    command1            需要执行的语句
-    ;;                  两个分号代表命令结束
-pattern 2)
+case var in             # 定义变量；var代表变量名
+	pattern 1)              # pattern表示需要匹配的模式。模式1；用 | 分割多个模式，相当于or
+    command1            # 需要执行的语句
+    ;;                  # 两个分号代表命令结束
+	pattern 2)
     command2
     ;;
-pattern 3)
+	pattern 3)
     command3
     ;;
-		  *)              default，不满足以上模式，默认执行*)下面的语句
+  *)                    # default，不满足以上模式，默认执行*)下面的语句
     command4
     ;;
-esac							esac表示case语句结束
+esac							      # esac表示case语句结束
 ~~~
 
 ## 2. 应用案例
 
 ### ㈠ 脚本传不同值做不同事
 
-**具体需求：**当给程序传入start、stop、restart三个不同参数时分别执行相应命令
+**具体需求：**当给程序传入start、stop、restart三个不同参数时分别执行相应的命令
 
 ~~~powershell
 #!/bin/env bash
 case $1 in
-        start|S)
-        service apache start &>/dev/null && echo "apache 启动成功"
-        ;;
-        stop|T)
-        service apache stop &>/dev/null && echo "apache 停止成功"
-        ;;
-        restart|R)
-        service apache restart &>/dev/null && echo "apache 重启完毕"
-        ;;
-        *)
-        echo "请输入要做的事情..."
-        ;;
+	start|S)
+		service apache start &> /dev/null && echo "apache 启动成功"
+    ;;
+  stop|T)
+    service apache stop &> /dev/null && echo "apache 停止成功"
+    ;;
+  restart|R)
+    service apache restart &> /dev/null && echo "apache 重启完毕"
+    ;;
+  *)
+    echo "请输入要做的事情..."
+    ;;
 esac
-
 ~~~
 
 ### ㈡ 根据用户需求选择做事
 
-**具体需求：**
-
-脚本提示让用户输入需要管理的服务名，然后提示用户需要对服务做什么操作，如启动，关闭等操作
+**具体需求：**脚本提示让用户输入需要管理的服务名，然后提示用户需要对服务进行什么操作，如启动、关闭等
 
 ```powershell
 #!/bin/env bash
-read -p "请输入你要管理的服务名称(vsftpd):" service
+read -p "请输入你要管理的服务名称(vsftpd): " service
 case $service in
-        vsftpd|ftp)
-        read -p "请选择你需要做的事情(restart|stop):" action
-        case $action in
-                stop|S)
-                service vsftpd stop &>/dev/null && echo "该$serivce服务已经停止成功"
-                ;;
-                start)
-                service vsftpd start &>/dev/null && echo "该$serivce服务已经成功启动"
-                ;;
-        esac
-        ;;
-        httpd|apache)
-        echo "apache hello world"
-        ;;
-        *)
-        echo "请输入你要管理的服务名称(vsftpd)"
-        ;;
+	vsftpd | ftp)
+		read -p "请选择你需要做的事情(restart | stop): " action
+		case $action in
+			start)
+				service vsftpd start &> /dev/null && echo "该$serivce服务已经成功启动"
+      	;;
+			stop)
+				service vsftpd stop &> /dev/null && echo "该$serivce服务已经停止成功"
+				;;
+    esac
+		;;
+	httpd | apache)
+		echo "apache hello world"
+		;;
+	*)
+		echo "请输入你要管理的服务名称(vsftpd)"
+		;;
 esac
-	
 ```
 
 ###㈢ 菜单提示让用户选择需要做的事
 
-**具体需求：**
-
-模拟一个多任务维护界面;当执行程序时先显示总菜单，然后进行选择后做相应维护监控操作
+**具体需求：**模拟一个多任务维护界面。当执行程序时先显示总菜单，进行选择后再做相应的维护监控操作。
 
 ```powershell
 **********请选择*********
@@ -109,12 +98,12 @@ q	退出程序
 
 **思路：**
 
-1. 菜单打印出来
-2. 交互式让用户输入操作编号，然后做出相应处理
+1. 打印菜单
+2. 交互式让用户输入操作编号，然后进行相应的处理
 
 **落地实现：**
 
-1. 菜单打印(分解动作)
+1. 打印菜单（分解动作） 
 
 ```powershell
 #!/bin/env bash
@@ -125,104 +114,105 @@ cat <<-EOF
 	m	查看内存使用
 	u	查看系统负载
 	q	退出程序
-	EOF
+EOF
 ```
 
 2. 最终实现
 
 ~~~powershell
 #!/bin/bash
-#打印菜单
-cat <<-EOF
-	h	显示命令帮助
-	f	显示磁盘分区
-	d	显示磁盘挂载
-	m	查看内存使用
-	u	查看系统负载
-	q	退出程序
-	EOF
 
-#让用户输入需要的操作
+# 打印菜单
+cat <<-EOF
+	h  显示命令帮助
+	f  显示磁盘分区
+	d  显示磁盘挂载
+	m  查看内存使用
+	u  查看系统负载
+	q  退出程序
+EOF
+
+# 让用户输入需要进行的操作
 while true
 do
-read -p "请输入需要操作的选项[f|d]:" var1
-case $var1 in
-	h)
-	cat <<-EOF
-        h       显示命令帮助
-        f       显示磁盘分区
-        d       显示磁盘挂载
-        m       查看内存使用
-        u       查看系统负载
-        q       退出程序
-	EOF
-	;;
-	f)
-	fdisk -l
-	;;
-	d)
-	df -h
-	;;
-	m)
-	free -m
-	;;
-	u)
-	uptime
-	;;
-	q)
-	exit
-	;;
-esac
+	read -p "请输入需要操作的选项: " var1
+	case $var1 in
+		h)
+			cat <<-EOF
+        h  显示命令帮助
+        f  显示磁盘分区
+        d  显示磁盘挂载
+        m  查看内存使用
+        u  查看系统负载
+        q  退出程序
+			EOF
+			;;
+		f)
+			fdisk -l
+			;;
+		d)
+			df -h
+			;;
+		m)
+			free -m
+			;;
+		u)
+			uptime
+			;;
+		q)
+			exit
+			;;
+	esac
 done
-
 
 
 #!/bin/bash
+
 #打印菜单
-menu(){
-cat <<-END
-	h	显示命令帮助
-	f	显示磁盘分区
-	d	显示磁盘挂载
-	m	查看内存使用
-	u	查看系统负载
-	q	退出程序
+menu() {
+	cat <<-END
+		h  显示命令帮助
+		f  显示磁盘分区
+		d  显示磁盘挂载
+		m  查看内存使用
+		u  查看系统负载
+		q  退出程序
 	END
 }
+
 menu
 while true
 do
-read -p "请输入你的操作[h for help]:" var1
-case $var1 in
-	h)
-	menu
-	;;
-	f)
-	read -p "请输入你要查看的设备名字[/dev/sdb]:" var2
-	case $var2 in
-		/dev/sda)
-		fdisk -l /dev/sda
-		;;
-		/dev/sdb)
-		fdisk -l /dev/sdb
-		;;
+	read -p "请输入你的操作[h for help]:" var1
+	case $var1 in
+		h)
+			menu
+			;;
+		f)
+			read -p "请输入你要查看的设备名字[/dev/sdb]:" var2
+			case $var2 in
+				/dev/sda)
+					fdisk -l /dev/sda
+					;;
+				/dev/sdb)
+					fdisk -l /dev/sdb
+					;;
+			esac
+			;;
+		d)
+			lsblk
+			;;
+		m)
+			free -m
+			;;
+		u)
+			uptime
+			;;
+		q)
+			exit
+			;;
 	esac
-	;;
-	d)
-	lsblk
-	;;
-	m)
-	free -m
-	;;
-	u)
-	uptime
-	;;
-	q)
-	exit
-	;;
-esac
 done
-
 ~~~
 
 **课堂练习：**
@@ -230,42 +220,37 @@ done
 1. 输入一个等级（A-E），查看每个等级的成绩；如：输入A，则显示“90分~100分”，依次类推
 2. 判断用户输入的字符串，如果是"hello",则显示"world"；如果是"world",则显示"hello",否则提示"请输入hello或者world，谢谢！"
 
-
-
-# 二、==函数==
+# 二、函数
 
 ## 1. 什么是函数？
 
-- shell中允许将**一组命令集合**或**语句**形成一段**可用代码**，这些代码块称为shell函数
-- 给这段代码起个名字称为函数名，后续可以直接调用该段代码的功能
+- shell中允许将**多条命令或语句**组合成一段**可用代码**，这种代码块称为shell函数
+- 给这段代码起个名字称为函数名，后续可以直接使用函数名调用该段代码的功能
 
 ## 2. 如何定义函数？
 
 **方法1：**
 
 ```powershell
-函数名()
+funcname()
 {
-  函数体（一堆命令的集合，来实现某个功能）   
+  commnads  
 }
 ```
 
 **方法2：**
 
 ```powershell
-function 函数名()
+function funcname()
 {
-   函数体（一堆命令的集合，来实现某个功能）
-   echo hello
-   echo world
+	commnads 
 }
-
 ```
 
-**函数中==return==说明:**
+**函数中return说明:**
 
-1. return可以==结束一个函数==。类似于循环控制语句break(结束当前循环，执行循环体后面的代码)。
-2. return默认返回函数中最后一个命令状态值，也可以给定参数值，范围是0-256之间。
+1. return可以结束一个函数。类似于循环控制语句break。
+2. return默认返回函数中最后一条命令的退出状态，也可以给定范围在0-256之间的参数值。
 3. 如果没有return命令，函数将返回最后一个指令的退出状态值。
 
 ##3. 函数如何调用？
@@ -276,21 +261,20 @@ function 函数名()
 [root@MissHou shell04]# cat fun1.sh 
 #!/bin/bash
 hello(){
-echo "hello lilei $1"
-hostname
+	echo "hello lilei $1"
+	hostname
 }
 menu(){
-cat <<-EOF
-1. mysql
-2. web
-3. app
-4. exit
-EOF
+	cat <<-EOF
+		1. mysql
+		2. web
+		3. app
+		4. exit
+	EOF
 }
 
 [root@MissHou shell04]# source fun1.sh 
 [root@MissHou shell04]# . fun1.sh 
-
 [root@MissHou shell04]# hello 888
 hello lilei 888
 MissHou.itcast.cc
@@ -299,29 +283,25 @@ MissHou.itcast.cc
 2. web
 3. app
 4. exit
-
 ~~~
 
 ### ㈡ 定义到用户的环境变量中
 
 ~~~powershell
-[root@MissHou shell05]# vim ~/.bashrc 
-文件中增加如下内容：
+# ~/.bashrc 文件中增加以下内容时，用户打开bash的时候会读取该文件
+
 hello(){
-echo "hello lilei $1"
-hostname
+	echo "hello lilei $1"
+	hostname
 }
 menu(){
-cat <<-EOF
-1. mysql
-2. web
-3. app
-4. exit
-EOF
+	cat <<-EOF
+		1. mysql
+		2. web
+		3. app
+		4. exit
+	EOF
 }
-
-注意：
-当用户打开bash的时候会读取该文件
 ~~~
 
 ### ㈢ 脚本中调用
@@ -331,31 +311,30 @@ EOF
 #打印菜单
 source ./fun1.sh
 menu(){
-cat <<-END
-	h	显示命令帮助
-	f	显示磁盘分区
-	d	显示磁盘挂载
-	m	查看内存使用
-	u	查看系统负载
-	q	退出程序
-	END
+  cat <<-END
+    h	显示命令帮助
+    f	显示磁盘分区
+    d	显示磁盘挂载
+    m	查看内存使用
+    u	查看系统负载
+    q	退出程序
+  END
 }
 menu		//调用函数
-
 ~~~
 
 ##4. 应用案例
 
 **具体需求：**
 
-1. 写一个脚本==收集用户输入==的基本信息(姓名，性别，年龄)，如不输入==一直提示输入==
+1. 写一个脚本收集用户输入的基本信息，如姓名、性别、年龄等，如不输入则一直提示输入
 2. 最后根据用户的信息输出相对应的内容
 
 **思路：**
 
-1. ==交互式==定义多个变量来保存用户信息  姓名、性别、年龄
-2. 如果不输一直提示输入
-   - ==循环==直到输入字符串不为空  while  判断输入字符串是否为空
+1. 交互式定义多个变量用于保存用户信息  姓名、性别、年龄
+2. 如果不输则一直提示输入
+   - 循环直到输入字符串不为空  while  判断输入字符串是否为空
    - 每个信息都必须不能为空，该功能可以定义为一个函数，方便下面脚本调用
 
 3. 根据用户输入信息做出匹配判断
@@ -364,69 +343,42 @@ menu		//调用函数
 
 ~~~powershell
 #!/bin/bash
-#该函数实现用户如果不输入内容则一直循环直到用户输入为止，并且将用户输入的内容打印出来
+# 该函数实现用户如果不输入内容则一直循环直到用户输入为止，并且将用户输入的内容打印出来
 input_fun()
 {
   input_var=""
   output_var=$1
   while [ -z $input_var ]
 	do
-	read -p "$output_var" input_var
+		read -p "$output_var " input_var
 	done
 	echo $input_var
 }
 
-input_fun 请输入你的姓名:
-
-或者
-#!/bin/bash
-fun()
-{
-	read -p "$1" var
-	if [ -z $var ];then
-		fun $1
-	else
-		echo $var
-	fi
-}
-
-
-#调用函数并且获取用户的姓名、性别、年龄分别赋值给name、sex、age变量
+# 调用函数并且获取用户的姓名、性别、年龄分别赋值给name、sex、age变量
 name=$(input_fun 请输入你的姓名:)
 sex=$(input_fun 请输入你的性别:)
 age=$(input_fun 请输入你的年龄:)
 
-#根据用户输入的性别进行匹配判断
+# 根据用户输入的性别进行匹配判断
 case $sex in
-			man)
-			if [ $age -gt 18 -a $age -le 35 ];then
-				echo "中年大叔你油腻了吗？加油"
-			elif [ $age -gt 35 ];then
-				echo "保温杯里泡枸杞"
-			else
-				echo "年轻有为。。。"
-			fi
-			;;
-			woman)
-			xxx
-			;;
-			*)
-			xxx
-			;;
+  man)
+    if [ $age -gt 18 -a $age -le 35 ]; then
+      echo "中年大叔你油腻了吗？加油"
+    elif [ $age -gt 35 ];	then
+      echo "保温杯里泡枸杞"
+    else
+      echo "年轻有为。。。"
+    fi
+    ;;
+  woman)
+    xxx
+    ;;
+  *)
+    xxx
+    ;;
 esac
-
 ~~~
-
-**扩展延伸：**
-
-```powershell
-描述以下代码含义：	
-:()
-{
-   :|:&
-}
-:
-```
 
 #三、综合案例
 
@@ -441,21 +393,21 @@ esac
 
 ~~~powershell
 欢迎使用Jumper-server，请选择你要操作的主机：
-1. DB1-Master
-2. DB2-Slave
-3. Web1
-4. Web2
-h. help
-q. exit
+  1. DB1-Master
+  2. DB2-Slave
+  3. Web1
+  4. Web2
+  h. help
+  q. exit
 ~~~
 
-3. 当用户选择相应主机后，直接**免密码登录**成功
-4. 如果用户不输入一直提示用户输入，直到用户选择退出
+3. 当用户选择相应主机后，直接**免密登录**
+4. 如果用户不输入则一直提示用户输入，直到用户选择退出
 
 ## 3. 综合分析
 
 1. 将脚本放到yunwei用户家目录里的.bashrc文件里（/shell05/jumper-server.sh）
-2. 将菜单定义为一个函数[打印菜单]，方便后面调用
+2. 将菜单定义为一个函数，方便后面调用
 3. 用case语句来实现用户的选择【交互式定义变量】
 4. 当用户选择了某一台服务器后，进一步询问用户需要做的事情  case...esac  交互式定义变量
 5. 使用循环来实现用户不选择一直让其选择
@@ -469,49 +421,46 @@ q. exit
 # 定义菜单打印功能的函数
 menu()
 {
-cat <<-EOF
-欢迎使用Jumper-server，请选择你要操作的主机：
-1. DB1-Master
-2. DB2-Slave
-3. Web1
-4. Web2
-h. help
-q. exit
+  cat <<-EOF
+    欢迎使用Jumper-server，请选择你要操作的主机：
+      1. DB1-Master
+      2. DB2-Slave
+      3. Web1
+      4. Web2
+      h. help
+      q. exit
 	EOF
 }
-# 屏蔽以下信号
-trap '' 1 2 3 19
-# 调用函数来打印菜单
+
+# trap命令允许你来指定shell脚本要监视并拦截的Linux信号。trap命令的格式为：trap commands signals。
+trap '' 1 2 3 19  # 屏蔽以下信号
 menu
-#循环等待用户选择
 while true
 do
-# 菜单选择，case...esac语句
-read -p "请选择你要访问的主机:" host
-case $host in
-	1)
-	ssh root@10.1.1.1
-	;;
-	2)
-	ssh root@10.1.1.2
-	;;
-	3)
-	ssh root@10.1.1.3
-	;;
-	h)
-	clear;menu
-	;;
-	q)
-	exit
-	;;
-esac
+  read -p "请选择你要访问的主机: " host
+  case $host in
+    1)
+      ssh root@10.1.1.1
+      ;;
+    2)
+      ssh root@10.1.1.2
+      ;;
+    3)
+      ssh root@10.1.1.3
+      ;;
+    h)
+      clear
+      menu
+      ;;
+    q)
+      exit
+      ;;
+  esac
 done
-
 
 将脚本放到yunwei用户家目录里的.bashrc里执行：
 bash ~/jumper-server.sh
 exit
-
 ~~~
 
 **进一步完善需求**
@@ -520,45 +469,41 @@ exit
 
 ```powershell
 #!/bin/bash
-#公钥推送成功
 trap '' 1 2 3 19
-#打印菜单用户选择
 menu(){
-cat <<-EOF
-欢迎使用Jumper-server，请选择你要操作的主机：
-1. DB1-Master
-2. DB2-Slave
-3. Web1
-4. Web2
-h. help
-q. exit
-EOF
+  cat <<-EOF
+    欢迎使用Jumper-server，请选择你要操作的主机：
+    1. DB1-Master
+    2. DB2-Slave
+    3. Web1
+    4. Web2
+    h. help
+    q. exit
+  EOF
 }
 
-#调用函数来打印菜单
 menu
 while true
 do
-read -p "请输入你要选择的主机[h for help]：" host
-
-#通过case语句来匹配用户所输入的主机
-case $host in
-	1|DB1)
-	ssh root@10.1.1.1
-	;;
-	2|DB2)
-	ssh root@10.1.1.2
-	;;
-	3|web1)
-	ssh root@10.1.1.250
-	;;
-	h|help)
-	clear;menu
-	;;
-	q|quit)
-	exit
-	;;
-esac
+  read -p "请输入你要选择的主机[h for help]：" host
+  case $host in
+    1 | DB1)
+      ssh root@10.1.1.1
+      ;;
+    2 | DB2)
+      ssh root@10.1.1.2
+      ;;
+    3 | web1)
+      ssh root@10.1.1.250
+      ;;
+    h | help)
+      clear
+      menu
+      ;;
+    q | quit)
+      exit
+      ;;
+  esac
 done
 
 自己完善功能：
@@ -573,26 +518,26 @@ kill某个进程
 
 ~~~powershell
 1) SIGHUP 			重新加载配置    
-2) SIGINT			键盘中断^C
-3) SIGQUIT      	键盘退出
+2) SIGINT				键盘中断^C
+3) SIGQUIT      键盘退出
 9) SIGKILL		 	强制终止
-15) SIGTERM	    	终止（正常结束），缺省信号
+15) SIGTERM	    终止（正常结束），缺省信号
 18) SIGCONT	   	继续
 19) SIGSTOP	   	停止
-20) SIGTSTP     	暂停^Z
+20) SIGTSTP     暂停^Z
 ~~~
 
 # 四、正则表达式
 
 ##1. 正则表达式是什么？
 
-**正则表达式**（Regular Expression、regex或regexp，缩写为RE），也译为正规表示法、常规表示法，是一种字符模式，用于在查找过程中==匹配指定的字符==。
+**正则表达式**（Regular Expression、regex或regexp，缩写为RE），也译为正规表示法、常规表示法，是一种字符模式，用于在查找过程中匹配指定的字符。
 
 许多程序设计语言都支持利用正则表达式进行**字符串操作**。例如，在Perl中就内建了一个功能强大的正则表达式引擎。
 
 正则表达式这个概念最初是由Unix中的工具软件（例如sed和grep）普及开的。
 
-支持正则表达式的程序如：locate |find| vim| grep| sed |awk
+支持正则表达式的程序有 locate | find | vim | grep | sed | awk
 
 ## 2. 正则能干什么？
 
@@ -601,13 +546,9 @@ kill某个进程
 
 ## 3. 正则当中名词解释
 
-- **元字符**
+- **元字符**：指那些在正则表达式中具有**特殊意义的专用字符**,如点(.) 星(*) 问号(?)等
 
-  指那些在正则表达式中具有**特殊意义的==专用字符==**,如:点(.) 星(*) 问号(?)等
-
-- **前导字符**
-
-  位于**元字符**前面的字符.	ab**==c==***   aoo**==o==.**
+- **前导字符**：位于**元字符**前面的字符.	ab**c***   aoo**o.**
 
 ##4. 第一类正则表达式
 
@@ -615,8 +556,8 @@ kill某个进程
 
 | 元字符 | 功能                                         | 备注      |
 | ------ | -------------------------------------------- | --------- |
-| .      | 匹配除了换行符以外的==任意单个==字符         |           |
-| *      | ==前导字符==出现==0==次或==连续多次==        |           |
+| .      | 匹配除了换行符以外的任意单个字符             |           |
+| *      | 前导字符出现0次或任意多次                    |           |
 | .*     | 任意长度字符                                 | ab.*      |
 | ^      | 行首(以...开头)                              | ^root     |
 | $      | 行尾(以...结尾)                              | bash$     |
@@ -624,7 +565,7 @@ kill某个进程
 | []     | 匹配括号里任意单个字符或一组单个字符         | [abc]     |
 | [^]    | 匹配不包含括号里任一单个字符或一组单个字符   | [^abc]    |
 | ^[]    | 匹配以括号里任意单个字符或一组单个字符开头   | ^[abc]    |
-| \^[\^] | 匹配不以括号里任意单个字符或一组单个字符开头 | \^\[^abc] |
+| \\^[^] | 匹配不以括号里任意单个字符或一组单个字符开头 | \^\[^abc] |
 
 - 示例文本
 
@@ -652,14 +593,6 @@ hello world
 helloworld yourself
 ~~~
 
-- 举例说明
-
-```powershell
-
-```
-
-
-
 ### ㈡ 正则中其他常用元字符
 
 | 元字符    | 功能                                    | 备注         |
@@ -667,9 +600,9 @@ helloworld yourself
 | \\<       | 取单词的头                              |              |
 | \\>       | 取单词的尾                              |              |
 | \\<  \\>  | 精确匹配                                |              |
-| \\{n\\}   | 匹配前导字符==连续出现n次==             |              |
-| \\{n,\\}  | 匹配前导字符==至少出现n次==             |              |
-| \\{n,m\\} | 匹配前导字符出现==n次与m次之间==        |              |
+| \\{n\\}   | 匹配前导字符连续出现n次                 |              |
+| \\{n,\\}  | 匹配前导字符至少出现n次                 |              |
+| \\{n,m\\} | 匹配前导字符出现n次与m次之间            |              |
 | \\(   \\) | 保存被匹配的字符                        |              |
 | \d        | 匹配数字（**grep -P**）                 | [0-9]        |
 | \w        | 匹配字母数字下划线（**grep -P**）       | [a-zA-Z0-9_] |
@@ -678,7 +611,7 @@ helloworld yourself
 **举例说明：**
 
 ~~~powershell
-需求：将10.1.1.1替换成10.1.1.254
+需求1：将10.1.1.1替换成10.1.1.254
 
 1）vim编辑器支持正则表达式
 # vim 1.txt
@@ -690,11 +623,11 @@ helloworld yourself
 10.1.1.254
 
 说明：
-找出含有10.1.1的行，同时保留10.1.1并标记为标签1，之后可以使用\1来引用它。
-最多可以定义9个标签，从左边开始编号，最左边的是第一个。
+	找出含有10.1.1的行，同时保留10.1.1并标记为标签1，之后可以使用\1来引用它。
+	最多可以定义9个标签，从左边开始编号，最左边的是第一个。
 
 
-需求：将helloworld yourself 换成hellolilei myself
+需求2：将helloworld yourself 换成hellolilei myself
 
 # vim 1.txt
 :%s#\(hello\)world your\(self\)#\1lilei my\2#g
@@ -704,13 +637,14 @@ hellolilei myself
 
 # sed -n 's/helloworld yourself/hellolilei myself/p' 1.txt 
 hellolilei myself
+
 # sed -n 's/\(hello\)world your\(self\)/\1lilei my\2/p' 1.txt 
 hellolilei myself
 
 Perl内置正则：
-\d      匹配数字  [0-9]
-\w      匹配字母数字下划线[a-zA-Z0-9_]
-\s      匹配空格、制表符、换页符[\t\r\n]
+  \d   匹配数字  [0-9]
+  \w   匹配字母数字下划线[a-zA-Z0-9_]
+  \s   匹配空格、制表符、换页符[\t\r\n]
 
 # grep -P '\d' 1.txt
 # grep -P '\w' 2.txt
@@ -719,13 +653,13 @@ Perl内置正则：
 
 ### ㈢ 扩展类正则常用元字符
 
-**==丑话说在前面：==**
+**丑话说在前面：**
 
 我说我比较特殊，你要相信！否则我错给你看:smirk:
 
-- grep你要用我，必须加 **==-E==**  或者  让你兄弟`egrep`来找我
+- grep你要用我，必须加 **-E**  或者  让你兄弟`egrep`来找我
 
-- sed你要用我，必须加 **==-r==**
+- sed你要用我，必须加 **-r**
 
 | 扩展元字符 | 功能                   | 备注                                         |
 | ---------- | ---------------------- | -------------------------------------------- |
@@ -741,27 +675,28 @@ Perl内置正则：
 
 ~~~powershell
 # grep "root|ftp|adm" /etc/passwd
-# egrep "root|ftp|adm" /etc/passwd
-# grep -E "root|ftp|adm" /etc/passwd
+egrep "root|ftp|adm" /etc/passwd
+grep -E "root|ftp|adm" /etc/passwd
 
-# grep -E 'o+gle' test.txt 
-# grep -E 'o?gle' test.txt 
+grep -E 'o+gle' test.txt 
+grep -E 'o?gle' test.txt 
 
-# egrep 'go{2,}' 1.txt
-# egrep '(my|your)self' 1.txt
+egrep 'go{2,}' 1.txt
+egrep '(my|your)self' 1.txt
 
-
-使用正则过滤出文件中的IP地址：
-# grep '[0-9]\{2\}\.[0-9]\{1\}\.[0-9]\{1\}\.[0-9]\{1\}' 1.txt 
+# 使用正则过滤出文件中的IP地址：
+grep '[0-9]\{2\}\.[0-9]\{1\}\.[0-9]\{1\}\.[0-9]\{1\}' 1.txt 
 10.1.1.1
+
 # grep '[0-9]{2}\.[0-9]{1}\.[0-9]{1}\.[0-9]{1}' 1.txt 
-# grep -E '[0-9]{2}\.[0-9]{1}\.[0-9]{1}\.[0-9]{1}' 1.txt 
-10.1.1.1
-# grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' 1.txt 
-10.1.1.1
-# grep -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt 
+grep -E '[0-9]{2}\.[0-9]{1}\.[0-9]{1}\.[0-9]{1}' 1.txt 
 10.1.1.1
 
+grep -E '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' 1.txt 
+10.1.1.1
+
+grep -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt 
+10.1.1.1
 ~~~
 
 ##5. 第二类正则
@@ -789,19 +724,19 @@ Perl内置正则：
 
 1. 我要找什么？
    - 找数字  		                  [0-9]
-   - 找字母                                    [a-zA-Z]
-   - 找标点符号                            [[:punct:]]
+   - 找字母                            [a-zA-Z]
+   - 找标点符号                     [[:punct:]]
 2. 我要如何找？看心情找
    - 以什么为首                           ^key
    - 以什么结尾                           key$
-   - 包含什么或不包含什么        [abc]  \^[abc]   [\^abc]   \^[\^abc]
+   - 包含什么或不包含什么         [abc]  \^[abc]   [\^abc]   \^[\^abc]
 3. 我要找多少呀？
-   - 找前导字符出现0次或连续多次             ab==*==
-   - 找任意单个(一次)字符                             ab==.==
-   - 找任意字符                                               ab==.*==
+   - 找前导字符出现0次或连续多次              ab*
+   - 找任意单个(一次)字符                             ab.
+   - 找任意字符                                             ab.*
    - 找前导字符连续出现几次                        {n}  {n,m}   {n,}
-   - 找前导字符出现1次或多次                      go==+==
-   -  找前到字符出现0次或1次                       go==?==                  
+   - 找前导字符出现1次或多次                      go+
+   -  找前到字符出现0次或1次                        go?
 
 # 五、正则元字符一栏表
 
@@ -860,41 +795,41 @@ abcdefg@itcast.com23ed
 
 ```powershell
 1、查找不以大写字母开头的行（三种写法）。
-grep '^[^A-Z]' 2.txt
-grep -v '^[A-Z]' 2.txt
-grep '^[^[:upper:]]' 2.txt
+    grep '^[^A-Z]' 2.txt
+    grep '^[^[:upper:]]' 2.txt
+    grep -v '^[A-Z]' 2.txt
 2、查找有数字的行（两种写法）
-grep '[0-9]' 2.txt
-grep -P '\d' 2.txt
+    grep '[0-9]' 2.txt
+    grep "[[:digit:]]" 2.txt
 3、查找一个数字和一个字母连起来的
-grep -E '[0-9][a-zA-Z]|[a-zA-Z][0-9]' 2.txt
+		grep -E '[0-9][a-zA-Z]|[a-zA-Z][0-9]' 2.txt
 4、查找不以r开头的行
-grep -v '^r' 2.txt
-grep '^[^r]' 2.txt
+    grep -v '^r' 2.txt
+    grep '^[^r]' 2.txt
 5、查找以数字开头的
-grep '^[0-9]' 2.txt
+		grep '^[0-9]' 2.txt
 6、查找以大写字母开头的
-grep '^[A-Z]' 2.txt
+		grep '^[A-Z]' 2.txt
 7、查找以小写字母开头的
-grep '^[a-z]' 2.txt
+		grep '^[a-z]' 2.txt
 8、查找以点结束的
-grep '\.$' 2.txt
+		grep '\.$' 2.txt
 9、去掉空行
-grep -v '^$' 2.txt
+		grep -v '^$' 2.txt
 10、查找完全匹配abc的行
-grep '\<abc\>' 2.txt
+		grep '\<abc\>' 2.txt
 11、查找A后有三个数字的行
-grep -E 'A[0-9]{3}' 2.txt
-grep  'A[0-9]\{3\}' 2.txt
+		grep -E 'A[0-9]{3}' 2.txt
+		grep 'A[0-9]\{3\}' 2.txt
 12、统计root在/etc/passwd里出现了几次
-grep -o 'root' 1.txt |wc -l
+		grep -o 'root' 1.txt | wc -l
 
 13、用正则表达式找出自己的IP地址、广播地址、子网掩码
-ifconfig eth0|grep Bcast|grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
-ifconfig eth0|grep Bcast| grep -E -o '([0-9]{1,3}.){3}[0-9]{1,3}'
-ifconfig eth0|grep Bcast| grep -P -o '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}'
-ifconfig eth0|grep Bcast| grep -P -o '(\d{1,3}.){3}\d{1,3}'
-ifconfig eth0|grep Bcast| grep -P -o '(\d+.){3}\d+'
+  	ifconfig eth0 | grep Bcast | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}'
+    ifconfig eth0 | grep Bcast | grep -E -o '([0-9]{1,3}.){3}[0-9]{1,3}'
+    ifconfig eth0 | grep Bcast | grep -P -o '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}'
+    ifconfig eth0 | grep Bcast | grep -P -o '(\d{1,3}.){3}\d{1,3}'
+    ifconfig eth0 | grep Bcast | grep -P -o '(\d+.){3}\d+'
 
 # egrep --color '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}' /etc/sysconfig/network-scripts/ifcfg-eth0
 IPADDR=10.1.1.1
@@ -908,15 +843,13 @@ GATEWAY=10.1.1.254
 
 
 14、找出文件中的ip地址并且打印替换成172.16.2.254
-grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt |sed -n 's/192.168.0.\(254\)/172.16.2.\1/p'
-
+		grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt | sed -n 's/192.168.0.\(254\)/172.16.2.\1/p'
 15、找出文件中的ip地址
-grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt
-
+		grep -o -E '([0-9]{1,3}\.){3}[0-9]{1,3}' 1.txt
 16、找出全部是数字的行
-grep -E '^[0-9]+$' test
+		grep -E '^[0-9]+$' test
 17、找出邮箱地址
-grep -E '^[0-9]+@[a-z0-9]+\.[a-z]+$'
+		grep -E '^[0-9]+@[a-z0-9]+\.[a-z]+$'
 
 
 grep --help:
@@ -929,7 +862,6 @@ Regexp selection and interpretation:
   -f, --file=FILE           obtain PATTERN from FILE
   -i, --ignore-case         忽略大小写
   -w, --word-regexp         匹配整个单词
-  
 ```
 
 #七、课后作业
@@ -945,7 +877,6 @@ Regexp selection and interpretation:
 **参考脚本：**
 
 ~~~powershell
-参考：
 #!/bin/bash
 conf=/etc/httpd/conf/httpd.conf
 input_fun()
@@ -954,7 +885,7 @@ input_fun()
   output_var=$1
   while [ -z $input_var ]
 	do
-	read -p "$output_var" input_var
+		read -p "$output_var " input_var
 	done
 	echo $input_var
 }
