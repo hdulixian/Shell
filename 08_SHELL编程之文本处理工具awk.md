@@ -471,17 +471,19 @@ YUNWEI is general user
 
 ```powershell
 打印1~5
-for ((i=1;i<=5;i++)); do echo $i; done
+[root@MissHou ~]# for ((i=1;i<=5;i++)); do echo $i; done
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) {print i} }'
 
 打印1~10中的奇数
 [root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=10;i+=2) {print i} }'
 [root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=10;i+=2) print i }'
-[root@MissHou ~]# for ((i=1;i<=10;i+=2)); do echo $i; done | awk '{sum+=$0}; END{print sum}'
 
-计算1-5的和
-[root@MissHou ~]# awk 'BEGIN{sum=0;for(i=1;i<=5;i++) sum+=i;print sum}'
-[root@MissHou ~]# awk 'BEGIN{for(i=1;i<=5;i++) (sum+=i);{print sum}}'
-[root@MissHou ~]# awk 'BEGIN{for(i=1;i<=5;i++) (sum+=i);print sum}'
+计算1-10中奇数的和
+[root@MissHou ~]# sum=0; for ((i=1;i<=10;i+=2)) do let sum+=i; done; echo $sum
+[root@MissHou ~]# awk 'BEGIN{ sum=0; for(i=1;i<=10;i+=2) {sum+=i}; {print sum} }'
+[root@MissHou ~]# awk 'BEGIN{ sum=0; for(i=1;i<=10;i+=2) sum+=i; print sum }'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=10;i+=2) sum+=i; print sum }'
+[root@MissHou ~]# for ((i=1;i<=10;i+=2)); do echo $i; done | awk '{sum+=$0}; END{print sum}'
 ```
 
 #### ② while循环
@@ -489,19 +491,20 @@ for ((i=1;i<=5;i++)); do echo $i; done
 ```powershell
 打印1-5
 [root@MissHou ~]# i=1; while (($i<=5)); do echo $i; let i++; done
+[root@MissHou ~]# i=1; while [ $i -le 5 ]; do echo $i; let i++; done
 
-[root@MissHou ~]# awk 'BEGIN { i=1; while(i<=5) {print i;i++} }'
+[root@MissHou ~]# awk 'BEGIN { i=1; while(i<=5) {print i; i++} }'
 打印1~10中的奇数
-[root@MissHou ~]# awk 'BEGIN{i=1;while(i<=10) {print i;i+=2} }'
+[root@MissHou ~]# awk 'BEGIN{ i=1; while(i<=10) {print i; i+=2} }'
 计算1-5的和
-[root@MissHou ~]# awk 'BEGIN{i=1;sum=0;while(i<=5) {sum+=i;i++}; print sum }'
-[root@MissHou ~]# awk 'BEGIN{i=1;while(i<=5) {(sum+=i) i++}; print sum }'
+[root@MissHou ~]# awk 'BEGIN{ i=1; sum=0; while(i<=5) {sum+=i; i++}; print sum }'
+[root@MissHou ~]# awk 'BEGIN{ i=1; while(i<=5) {(sum+=i); i++}; print sum }'
+[root@MissHou ~]# i=1; while (($i<=5)); do echo $i; let i++; done | awk '{sum+=$0}; END{print sum}'
 ```
 
 #### ③ 嵌套循环
 
 ~~~powershell
-嵌套循环：
 #!/bin/bash
 for ((y=1;y<=5;y++))
 do
@@ -512,37 +515,32 @@ do
 	echo
 done
 
-awk 'BEGIN{ for(y=1;y<=5;y++) {for(x=1;x<=y;x++) {printf x} ;print } }'
-
-[root@MissHou ~]# awk 'BEGIN { for(y=1;y<=5;y++) { for(x=1;x<=y;x++) {printf x}; print} }'
+[root@MissHou ~]# awk 'BEGIN{ for(y=1;y<=5;y++) { for(x=1;x<=y;x++) {printf x}; print } }'
+1
+12
+123
+1234
+12345
+[root@MissHou ~]# awk 'BEGIN{ y=1; while(y<=5) { for(x=1;x<=y;x++) {printf x}; y++; print } }'
 1
 12
 123
 1234
 12345
 
-[root@MissHou ~]# awk 'BEGIN{ y=1;while(y<=5) { for(x=1;x<=y;x++) {printf x}; y++; print}}'
-1
-12
-123
-1234
-12345
+打印99口诀表：
+[root@MissHou ~]# awk 'BEGIN{ for(y=1;y<=9;y++) { for(x=1;x<=y;x++) { printf x"*"y"="x*y"\t" }; print } }'
+[root@MissHou ~]# awk 'BEGIN{ for(y=1;y<=9;y++) { for(x=1;x<=y;x++) printf x"*"y"="x*y"\t"; print } }'
+[root@MissHou ~]# awk 'BEGIN{ i=1; while(i<=9) {for(j=1;j<=i;j++) { printf j"*"i"="j*i"\t" }; print; i++ } }'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=9;i++) {j=1; while(j<=i) { printf j"*"i"="i*j"\t"; j++ }; print } }'
 
-尝试用三种方法打印99口诀表：
-[root@MissHou ~]#awk 'BEGIN{for(y=1;y<=9;y++) { for(x=1;x<=y;x++) {printf x"*"y"="x*y"\t"};print} }'
-
-[root@MissHou ~]#awk 'BEGIN{for(y=1;y<=9;y++) { for(x=1;x<=y;x++) printf x"*"y"="x*y"\t";print} }'
-[root@MissHou ~]#awk 'BEGIN{i=1;while(i<=9){for(j=1;j<=i;j++) {printf j"*"i"="j*i"\t"};print;i++ }}'
-
-[root@MissHou ~]#awk 'BEGIN{for(i=1;i<=9;i++){j=1;while(j<=i) {printf j"*"i"="i*j"\t";j++};print}}'
-
-循环的控制：
+循环控制：
 break		条件满足的时候中断循环
 continue	条件满足的时候跳过循环
-[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) {if(i3) break;print i} }'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) { if(i==3) break; print i } }'
 1
 2
-[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) {if(i3) continue;print i} }'
+[root@MissHou ~]# awk 'BEGIN{ for(i=1;i<=5;i++) { if(i==3) continue; print i } }'
 1
 2
 4
@@ -554,10 +552,17 @@ continue	条件满足的时候跳过循环
 ~~~powershell
 + - * / %(模) ^(幂2^3)
 可以在模式中执行计算，awk都将按浮点数方式执行算术运算
+
 [root@MissHou ~]# awk 'BEGIN{print 1+1}'
-[root@MissHou ~]# awk 'BEGIN{print 1**1}'
-[root@MissHou ~]# awk 'BEGIN{print 2**3}'
+1
+[root@MissHou ~]# awk 'BEGIN{print 2*3}'
+6
 [root@MissHou ~]# awk 'BEGIN{print 2/3}'
+0.666667
+[root@MissHou ~]# awk 'BEGIN{print 2%3}'
+2
+[root@MissHou ~]# awk 'BEGIN{print 2^3}'
+8
 ~~~
 
 # 六、awk统计案例
@@ -565,7 +570,7 @@ continue	条件满足的时候跳过循环
 ## 1、统计系统中各种类型的shell
 
 ```powershell
-[root@MissHou ~]# awk -F: '{ shells[$NF]++ };END{for (i in shells) {print i,shells[i]} }' /etc/passwd
+[root@MissHou ~]# awk -F: '{ shells[$NF]++ }; END{ for (i in shells) { print i, shells[i]} }' /etc/passwd
 
 books[linux]++
 books[linux]=1
@@ -586,17 +591,17 @@ books[php]++
 ## 2、统计网站访问状态
 
 ```powershell
-[root@MissHou ~]# ss -antp|grep 80|awk '{states[$1]++};END{for(i in states){print i,states[i]}}'
+[root@MissHou ~]# ss -antp | grep 80 | awk '{ states[$1]++ }; END{ for(i in states) { print i, states[i] } }'
 TIME_WAIT 578
 ESTABLISHED 1
 LISTEN 1
 
-[root@MissHou ~]# ss -an |grep :80 |awk '{states[$2]++};END{for(i in states){print i,states[i]}}'
+[root@MissHou ~]# ss -an | grep :80 | awk '{ states[$2]++ }; END{ for(i in states) { print i, states[i] } }'
 LISTEN 1
 ESTAB 5
 TIME-WAIT 25
 
-[root@MissHou ~]# ss -an |grep :80 |awk '{states[$2]++};END{for(i in states){print i,states[i]}}' |sort -k2 -rn
+[root@MissHou ~]# ss -an | grep :80 | awk '{ states[$2]++ }; END{ for(i in states) { print i, states[i] } }' | sort -k2 -rn
 TIME-WAIT 18
 ESTAB 8
 LISTEN 1
@@ -605,22 +610,22 @@ LISTEN 1
 ## 3、统计访问网站的每个IP的数量
 
 ```powershell
-[root@MissHou ~]# netstat -ant |grep :80 |awk -F: '{ip_count[$8]++};END{for(i in ip_count){print i,ip_count[i]} }' |sort
+[root@MissHou ~]# netstat -ant | grep :80 | awk -F: '{ ip_count[$8]++ }; END{ for(i in ip_count) { print i, ip_count[i] } }' | sort
 
-[root@MissHou ~]# ss -an |grep :80 |awk -F":" '!/LISTEN/{ip_count[$(NF-1)]++};END{for(i in ip_count){print i,ip_count[i]}}' |sort -k2 -rn |head
+[root@MissHou ~]# ss -an | grep :80 | awk -F":" '!/LISTEN/{ip_count[$(NF-1)]++}; END{ for(i in ip_count) { print i,ip_count[i] } }' | sort -k2 -rn | head
 ```
 
 ## 4、统计网站日志中PV量
 
 ```powershell
 统计Apache/Nginx日志中某一天的PV量 　<统计日志>
-[root@MissHou ~]# grep '27/Jul/2017' mysqladmin.cc-access_log |wc -l
+[root@MissHou ~]# grep '27/Jul/2017' mysqladmin.cc-access_log | wc -l
 14519
 
 统计Apache/Nginx日志中某一天不同IP的访问量　<统计日志>
-[root@MissHou ~]# grep '27/Jul/2017' mysqladmin.cc-access_log |awk '{ips[$1]++};END{for(i in ips){print i,ips[i]} }' |sort -k2 -rn |head
+[root@MissHou ~]# grep '27/Jul/2017' mysqladmin.cc-access_log | awk '{ ips[$1]++}; END{ for(i in ips) { print i,ips[i] } }' | sort -k2 -rn | head
 
-[root@MissHou ~]# grep '07/Aug/2017' access.log |awk '{ips[$1]++};END{for(i in ips){print i,ips[i]} }' |awk '$2>100' |sort -k2 -rn
+[root@MissHou ~]# grep '07/Aug/2017' access.log | awk '{ ips[$1]++ }; END{ for(i in ips) { print i,ips[i] } }' | awk '$2>100' | sort -k2 -rn
 ```
 
 **名词解释：**
