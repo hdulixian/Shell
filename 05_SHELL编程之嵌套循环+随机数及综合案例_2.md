@@ -1,9 +1,8 @@
 [TOC]
 #课程目标
 
-- 掌握for循环语句的基本语法结构
-- 掌握while和until循环语句的基本语法结构
-- 能会使用RANDOM产生随机数
+- 掌握for循环、while和until循环的基本语法结构
+- 学会使用RANDOM产生随机数
 - 理解嵌套循环
 
 # 一、随机数
@@ -15,8 +14,8 @@
 **前言：**要想调用变量，不管你是什么变量都要给钱，而且是美元:heavy_dollar_sign:
 
 ~~~powershell
-echo $RANDOM	# 打印一个随机数
-set s| grep RANDOM	# 查看系统上一次生成的随机数
+echo $RANDOM						# 打印一个随机数
+set | grep RANDOM				# 查看系统上一次生成的随机数
 RANDOM=28325
 
 echo $[$RANDOM%2]				# 产生0~1之间的随机数
@@ -56,8 +55,6 @@ do
   n7=$[$RANDOM%10]
   n8=$[$RANDOM%10]
   echo "139${n1}${n2}${n3}${n4}${n5}${n6}${n7}${n8}" >> $file
-  或者
-  echo "139${n1}${n2}${n3}${n4}${n5}${n6}${n7}${n8}" | tee -a phonenum.txt
 done
 
 #!/bin/bash
@@ -73,7 +70,7 @@ do
   n6=$[$RANDOM%10]
   n7=$[$RANDOM%10]
   n8=$[$RANDOM%10]
-  echo "139${n1}${n2}${n3}${n4}${n5}${n6}${n7}${n8}" >> $file
+  echo "139${n1}${n2}${n3}${n4}${n5}${n6}${n7}${n8}" | tee -a phonenum.txt
   let i++
 done
 ~~~
@@ -85,7 +82,7 @@ done
 #### ① 思路
 
 1. 确定幸运观众所在的行	`0-1000  随机找出一个数字   $[$RANDOM%1000+1]`
-2. 将电话号码提取出来      `head -随机产生行号 phonenum.txt | tail -1`
+2. 将电话号码提取出来      `head -随机产生的行号 phonenum.txt | tail -1`
 3. 显示前3个和后4个数到屏幕   `echo 139****xxxx`
 
 #### ② 落地实现
@@ -112,9 +109,9 @@ file=/shell03/phonenum.txt
 for i in {1..5}
 do
   linenum=`wc -l $file | cut -d' ' -f1`
-  line=$[$RANDOM%$linenum+1]
-  luck=`head -n $line $file | tail -1`
-  echo "139****${luck:7:4}" && echo $luck >> /shell04/luck_num.txt
+  luck_line=$[$RANDOM%$linenum+1]
+  luck_num=`head -$luck_line $file | tail -1`
+  echo "139****${luck_num:7:4}" && echo $luck >> luck.txt
 done
 ~~~
 
@@ -232,10 +229,10 @@ done
 for ((i=5; i>=1; i--))
 do
 	for ((j=5; j>=i; j--))
-		do
-			echo -n $j
-		done
-		echo
+	do
+		echo -n $j
+	done
+	echo
 done
 ~~~
 
@@ -269,7 +266,7 @@ done
 
 ##2. 课堂练习
 
-**打印九九乘法表（三种方法）**
+**打印九九乘法表**
 
 ~~~powershell
 1*1=1
@@ -381,7 +378,7 @@ for / while / until
 exit			退出整个程序
 break		  结束当前循环，或跳出本层循环
 continue 	忽略本次循环剩余的代码，直接进行下一次循环
-shift			使位置参数向左移动，默认移动1位，可以使用shift 2
+shift			使位置参数向左移动，默认移动1位，可以使用shift 2左移两位
 ~~~
 
 **举例说明：**用户自定义输入数字，然后计算和
@@ -407,21 +404,20 @@ echo sum=$sum
 
 ##5. 补充扩展expect
 
-有时候我们使用命令行进行交互时，不想频繁的做一些重复的事情，例如：每次ssh远程登录时都需要输入密码。使用spawn和expect可以自动完成一些交互。如以下为一个免密登录远程服务器的脚本：
+有时候我们使用命令行进行交互时，不想频繁的做一些重复的事情，例如：每次ssh远程登录时都需要输入密码。使用spawn和expect可以自动完成一些交互。以下为一个免密登录远程服务器的脚本：
 
 ```powershell
 #!/usr/bin/expect
 # 免密登录远程服务器
-set login_name  "username"
-set login_host  "host's ip"
-set password    "guess what"
+set login_name "username"
+set login_host "host's ip"
+set password "guess what"
 
 spawn ssh $login_name@$login_host
 expect {
 		"(yes/no)" { send "yes\r"; exp_continue }
 		"password:" { send "$password\r" }
 }
-#expect $login_name@*   {send "ls\r" }  ;
 interact
 ```
 
@@ -429,19 +425,17 @@ interact
 
 ~~~powershell
 #!/usr/bin/expect
-# 开启一个程序
-spawn ssh root@10.1.1.1
-# 捕获相关内容
-expect {
+spawn ssh root@10.1.1.1  # 开启一个程序
+expect {  # 捕获相关内容
         "(yes/no)" { send "yes\r"; exp_continue }
         "password:" { send "123456\r" }
 }
 interact   # 交互
 
 脚本执行方式：
-# ./expect1.sh
-# /shell04/expect1.sh
-# expect -f expect1.sh
+  # ./expect1.sh
+  # /shell04/expect1.sh
+  # expect -f expect1.sh
 
 1）定义变量
 #!/usr/bin/expect
@@ -504,7 +498,7 @@ expect eof
 # 循环在指定的服务器上创建用户和文件
 while read ip pass
 do
-	/usr/bin/expect << -END &> /dev/null
+	/usr/bin/expect <<-END &> /dev/null
 	spawn ssh root@$ip
 	expect {
 		"(yes/no)" { send "yes\r"; exp_continue }
@@ -523,7 +517,7 @@ done < ip.txt
 cat ip.txt | while read ip pass
 do
 	{
-		/usr/bin/expect << -HOU &> /dev/null
+		/usr/bin/expect <<-EOF &> /dev/null
 		spawn ssh root@$ip
     expect {
     	"yes/no" { send "yes\r"; exp_continue }
@@ -533,7 +527,7 @@ do
 		send "hostname\r"
 		send "exit\r"
 		expect eof
-		HOU
+		EOF
 	}&
 done
 wait
@@ -544,7 +538,7 @@ echo "user is ok...."
 while read ip pass
 do
 	{
-		/usr/bin/expect << -HOU &> /dev/null
+		/usr/bin/expect <<-EOF &> /dev/null
 		spawn ssh root@$ip
 		expect {
 			"yes/no" { send "yes\r"; exp_continue }
@@ -554,7 +548,7 @@ do
 		send "hostname\r"
 		send "exit\r"
 		expect eof
-		HOU
+		EOF
 	}&
 done < ip.txt
 wait

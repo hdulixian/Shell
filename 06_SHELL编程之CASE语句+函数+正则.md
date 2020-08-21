@@ -114,7 +114,7 @@ cat <<-EOF
 	m	查看内存使用
 	u	查看系统负载
 	q	退出程序
-EOF
+	EOF
 ```
 
 2. 最终实现
@@ -130,7 +130,7 @@ cat <<-EOF
 	m  查看内存使用
 	u  查看系统负载
 	q  退出程序
-EOF
+	EOF
 
 # 让用户输入需要进行的操作
 while true
@@ -167,7 +167,6 @@ done
 
 
 #!/bin/bash
-
 #打印菜单
 menu() {
 	cat <<-END

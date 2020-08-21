@@ -5,26 +5,25 @@
 [TOC]
 #SHELL编程模块课程目标
 
-- ① Shell基本语法结构，如变量定义、条件判断、循环语句(for、until、while)、分支语句、函数、数组等； 
+1.  Shell基本语法，包含变量定义、条件判断、分支语句、循环语句（for、until、while）、函数、数组等； 
 
-  ② 基本正则表达式的运用;
+2.  基本正则表达式的运用;
 
-  ③ 文件处理三剑客：grep、sed、awk工具的使用；
+3.  文件处理三剑客：grep、sed、awk工具的使用；
 
-  ④ 使用shell脚本完成一些较复杂的任务，如服务搭建、批处理等。
+4.  使用shell脚本完成一些较复杂的任务，如服务搭建、批处理等。
 
-  **说明：以上内容仅仅是基本要求，还有很多更深更难的语法需要扩充学习。**
 
-- **本节目标**
+**说明：以上内容仅仅是基本要求，还有很多更深更难的语法需要扩充学习。**
 
-  - 熟练掌握shell变量的定义和获取（重点）
-  - 能够进行shell简单的四则运算
+**本节目标**
+
+- 熟练掌握shell变量的定义和获取
+- 能够进行简单的shell四则运算
 
 # 一、SHELL介绍
 
-**前言：**
-
-计算机只能识别机器语言(0和1)，如11000000 这种。但是，编码人员不能直接去写01这样的代码，所以，要想将编码人员所开发的代码在计算机上运行，就必须借助工具将其翻译成机器语言，这个工具就是我们通常所说的**编译器**或**解释器**。
+计算机只能识别机器语言（0和1），如11000000 。但编码人员不可能直接去编写机器码，因此，要想将编码人员所开发的程序在计算机上运行起来，就必须借助工具将其翻译成机器语言，这个工具就是我们通常所说的**编译器**或**解释器**。
 
 ##1. 编程语言分类
 
@@ -38,24 +37,22 @@
 
 - **总结**
 
-编译型语言比解释型语言速度较快，但是不如解释型语言跨平台性好。如果做底层开发、大型应用程序或操作系开发一般都选用编译型语言，而如果是一些服务器脚本及一些辅助的接口，对速度要求不高，或是对各个平台的兼容性有要求的话则一般都用解释型语言。
+编译型语言比解释型语言速度较快，但是不如解释型语言跨平台性好。底层开发、大型应用程序或操作系开发一般都选用编译型语言，而如果是一些服务器脚本或是一些辅助的对速度要求不高的接口，亦或是对各个平台的兼容性有要求的话则一般都用解释型语言。
 
 ##2. shell简介
-
-**总结：**
 
 - shell是人机交互的一个桥梁
 - shell的种类
 
 ~~~powershell
 [root@MissHou ~]# cat /etc/shells 
-/bin/sh					#是bash的一个快捷方式
-/bin/bash			  #bash是大多数Linux默认的shell，包含的功能几乎可以涵盖shell所有的功能
-/sbin/nologin		#表示非交互，不能登录操作系统
-/bin/dash				#小巧，高效，功能相比少一些
+/bin/sh					# 是bash的一个快捷方式
+/bin/bash			  # bash是大多数Linux默认的shell，包含的功能几乎可以涵盖shell所有的功能
+/sbin/nologin		# 表示非交互，不能登录操作系统
+/bin/dash				# 小巧，高效，功能相比少一些
 
-/bin/csh				#具有C语言风格的一种shell，具有许多特性，但也有一些缺陷（已废弃）
-/bin/tcsh				#是csh的增强版，完全兼容csh（已废弃）
+/bin/csh				# 具有c语言风格的一种shell，具有许多特性，但也有一些缺陷（已废弃）
+/bin/tcsh				# 是csh的增强版，完全兼容csh（已废弃）
 ~~~
 
 **思考：终端和shell有什么关系？**
@@ -64,17 +61,13 @@
 
 ### ㈠ 什么是shell脚本？
 
-- 一句话概括
+- 一句话概括：将需要执行的命令保存到文本中，按顺序执行。它是解释型的，意味着不需要编译。
 
-简单来说就是将需要执行的命令保存到文本中，按顺序执行。它是解释型的，意味着不需要编译。
-
-- 准确叙述
-
-**若干命令 + 脚本的基本格式 + 脚本特定语法 + 思想 = shell脚本**
+- 准确叙述：**若干命令 + 脚本的基本格式 + 脚本特定语法 + 思想 = shell脚本**
 
 ### ㈡ 什么时候用到脚本?
 
-**重复化**、复杂化的工作，通过把工作的命令写成脚本，以后仅仅需要执行脚本就能完成这些工作。
+**重复化**、复杂化的工作，通过将多条命令编写成脚本，以后仅仅需要执行脚本就能完成这些工作。
 
 ### ㈢ shell脚本能干啥?
 
@@ -104,8 +97,7 @@
 
 `#!/bin/bash`  表示以下内容使用bash解释器解析
 
-**注意：**
-如果直接将解释器路径写死在脚本里，可能在某些系统会存在找不到解释器的兼容性问题，所以可以使用以下格式:
+**注意：**如果直接将解释器路径写死在脚本里，可能在某些系统会出现找不到解释器的兼容性问题，此时可以使用以下格式:
 
 ```powershell
 #!/bin/env 解释器  #!/bin/env bash
@@ -123,11 +115,11 @@
 # Usage:用法
 # Update:更新时间
 
-#下面为脚本的具体内容
+# 下面为脚本的具体内容
 commands
 ~~~
 
-3）**脚本第三部分**，脚本要实现的具体代码内容
+3）**脚本第三部分**，脚本要实现的具体操作命令
 
 ### ㈦ shell脚本的执行方法
 
@@ -149,7 +141,7 @@ echo "hello world"
 echo "hello world"
 echo "hello world"
 
-2) 脚本增加可执行权限
+2) 增加可执行权限
 [root@MissHou shell01]# chmod +x first_shell.sh
 
 3) 标准方式执行脚本
@@ -159,7 +151,7 @@ echo "hello world"
 或
 [root@MissHou shell01]# ./first_shell.sh
 
-注意：标准执行方式脚本必须要有可执行权限。
+注意：使用标准执行方式执行脚本时必须要有可执行权限。
 ```
 
 - 非标准的执行方法（不建议）
@@ -169,6 +161,7 @@ echo "hello world"
 ```powershell
 [root@MissHou shell01]# bash first_shell.sh
 [root@MissHou shell01]# sh first_shell.sh
+
 [root@MissHou shell01]# bash -x first_shell.sh
 + echo 'hello world'
 hello world
@@ -178,11 +171,11 @@ hello world
 hello world
 
 注意：
--x: 一般用于排错，查看脚本的执行过程
--n: 用来查看脚本的语法是否有问题
+	-x: 一般用于排错，查看脚本的执行过程
+	-n: 用来查看脚本的语法是否有问题
 ```
 
-2. 使用`source`命令读取脚本文件,执行文件里的代码
+2. 使用`source`命令读取脚本文件，执行文件里的代码
 
 ```powershell
 [root@MissHou shell01]# source first_shell.sh
@@ -191,7 +184,7 @@ hello world
 hello world
 ```
 
-**小试牛刀：**写一个木有灵魂的脚本，要求如下：
+**小试牛刀：**编写一个脚本，要求如下：
 
 1. 删除/tmp/目录下的所有文件   `rm /tmp/*`
 
@@ -199,9 +192,9 @@ hello world
 
 3. 拷贝/etc/hosts文件到刚创建的dir1目录里      ` cp /etc/hosts /tmp/dir1`
 
-4. 最后打印"报告首长，任务已于2019-05-05 10:10:10时间完成"内容   
+4. 最后打印"任务已于2019-05-05 10:10:10时间完成"内容   
 
-   `echo "报告首长，任务已于$(date +'%F %T')"`
+   `echo "任务已于$(date +'%F %T')"`
 
 # 二、变量的定义
 
@@ -233,7 +226,6 @@ hello
 world
 [root@MissHou ~]# unset A			不跟你玩了，取消变量
 [root@MissHou ~]# echo $A			从此，我单身了，你可以给我介绍任何人
-
 ```
 
 ## 4. 变量的定义规则
@@ -314,19 +306,19 @@ TMP_FILE=/var/log/1.log
 [root@MissHou ~]# echo ${A:2:4}		#表示从A变量中第3个字符开始截取，截取4个字符
 3456
 
-$变量名 和 ${变量名}的异同
+$变量名 和 ${变量名} 的异同
 	相同点：都可以调用变量
-	不同点：${变量名}可以只截取变量的一部分，而$变量名不可以
+	不同点：${变量名}可以截取变量的一部分，而 $变量名 不可以
 ```
 
 ### ㈡ 命令执行结果赋值给变量
 
 ```powershell
-[root@MissHou ~]# B=`date +%F`
-[root@MissHou ~]# echo $B
+[root@MissHou ~]# A=`date +%F`
+[root@MissHou ~]# echo $A
 2019-04-16
-[root@MissHou ~]# C=$(uname -r)
-[root@MissHou ~]# echo $C
+[root@MissHou ~]# B=$(uname -r)
+[root@MissHou ~]# echo $B
 2.6.32-696.el6.x86_64
 ```
 
@@ -334,25 +326,22 @@ $变量名 和 ${变量名}的异同
 
 **目的：**让用户自己给变量赋值，比较灵活。
 
-**语法：**
+**语法：**`read [选项] 变量名`
 
-```powershell
-read [选项] 变量名
-```
+**常用选项：**
 
-**常见选项：**
-
-| 选项 | 释义                                                       |
-| ---- | ---------------------------------------------------------- |
-| -p   | 定义提示用户的信息                                         |
-| -s   | 不显示（不显示用户输入的内容）                             |
-| -t   | 定义超时时间，默认单位为秒（限制用户输入变量值的超时时间） |
-| -n   | 定义字符数（限制变量值的长度）                             |
+| 选项 | 释义                                                   |
+| ---- | ------------------------------------------------------ |
+| -p   | 定义提示用户的信息                                     |
+| -s   | 不显示（不显示用户输入的内容）                         |
+| -t   | 定义超时时间，单位为秒（限制用户输入变量值的超时时间） |
+| -n   | 定义字符数（限制变量值的长度）                         |
 
 **举例说明：**
 
-```powershell
 用法1：用户自己定义变量值
+
+```powershell
 [root@MissHou ~]# read name
 harry
 [root@MissHou ~]# echo $name
@@ -368,33 +357,30 @@ tom
 ```powershell
 [root@MissHou ~]# cat 1.txt 
 10.1.1.1 255.255.255.0
-
-[root@MissHou ~]# read ip mask < 1.txt 
+[root@MissHou ~]# read ip mask < 1.txt  # 重点掌握！！！ 后续while循环中会用到
 [root@MissHou ~]# echo $ip
 10.1.1.1
 [root@MissHou ~]# echo $mask
 255.255.255.0
+[root@MissHou ~]# echo $ip $mask
+10.1.1.1 255.255.255.0
 ```
 
 ### ㈣ 定义有类型的变量(declare)
 
-**目的：** 给变量做一些限制，固定变量的类型，比如：整型、只读
+**目的：** 给变量做一些限制，固定变量的类型，如整型、只读
 
-**用法：**
-
-```powershell
-declare 选项 变量名=变量值
-```
+**用法：**`declare 选项 变量名=变量值`
 
 **常用选项：**
 
-| 选项 | 释义                       | 举例                                           |
-| ---- | -------------------------- | ---------------------------------------------- |
-| -i   | 将变量看成整数             | declare -i A=123                               |
-| -r   | 定义只读变量               | declare -r B=hello                             |
-| -a   | 定义普通数组；查看普通数组 |                                                |
-| -A   | 定义关联数组；查看关联数组 |                                                |
-| -x   | 将变量通过环境导出         | declare -x AAA=123456 等同于 export AAA=123456 |
+| 选项 | 释义               | 举例                                           |
+| ---- | ------------------ | ---------------------------------------------- |
+| -i   | 定义整型变量       | declare -i A=123                               |
+| -r   | 定义只读变量       | declare -r B=hello                             |
+| -a   | 定义／查看普通数组 |                                                |
+| -A   | 定义／查看关联数组 |                                                |
+| -x   | 将变量通过环境导出 | declare -x AAA=123456 等价于 export AAA=123456 |
 
 **举例说明：**
 
@@ -426,7 +412,7 @@ hello
 - **环境变量**：当前进程有效，并且能够被**子进程**调用。
   - `env`查看当前用户的环境变量
   -  `set`查询当前用户的所有变量，包括临时变量和环境变量
-  - `export 变量名=变量值`    或者  `变量名=变量值; export 变量名`
+  - `export 变量名=变量值`    或者  `变量名=变量值; export 变量名`    或者     `declare -x 变量名=变量值`
 
 ~~~powershell
 [root@MissHou ~]# export A=hello		临时将一个本地变量（临时变量）变成环境变量
@@ -434,11 +420,8 @@ hello
 A=hello
 
 永久生效：
-vim /etc/profile 或者 ~/.bashrc
-export A=hello
-或者
-A=hello
-export A
+vim /etc/profile 或者 vim ~/.bashrc
+export A=hello 或者 A=hello; export A
 
 说明：系统中有一个变量PATH，环境变量
 export PATH=/usr/local/mysql/bin:$PATH
@@ -463,20 +446,20 @@ export PATH=/usr/local/mysql/bin:$PATH
 **说明：**以上文件修改后，都需要重新source让其生效或者退出系统重新登录。
 
 - **用户登录**系统**读取**相关文件的顺序
-  1. `/etc/profile`
-  2. `$HOME/.bash_profile`
-  3. `$HOME/.bashrc`
-  4. `/etc/bashrc`
+  1. `/etc/profile`  ———— 全局环境变量
+  2. `$HOME/.bash_profile`  ———— 用户环境变量
+  3. `$HOME/.bashrc`  ———— 用户定义的别名、umask、函数等
+  4. `/etc/bashrc`  ———— 全局别名、umask、函数等
   5. `$HOME/.bash_logout`
 
 ### ㈣ 系统变量
 
-- **系统变量(内置bash中变量)** ： shell本身已经固定好了它的名字和作用.
+- **系统变量（内置bash中的变量）** ： shell本身已经固定好了它的名字和作用。
 
 | 内置变量     | 含义                                                         |
 | ------------ | ------------------------------------------------------------ |
 | $?           | 上一条命令执行后返回的状态；状态值为0表示执行正常，非0表示执行异常或错误 |
-| $0           | 当前执行的程序或脚本名                                       |
+| $0           | ————— 当前执行的程序或脚本名 —————                           |
 | $#           | 脚本后面接的参数的个数                                       |
 | $*           | 脚本后面所有参数，参数当成一个整体输出，每一个变量参数之间以空格隔开 |
 | $@           | 脚本后面所有参数，参数是独立的，也是全部输出                 |
@@ -490,7 +473,7 @@ export PATH=/usr/local/mysql/bin:$PATH
 
 ```powershell
 #!/bin/bash
-#了解shell内置变量中的位置参数含义
+# 了解shell内置变量中的位置参数含义
 echo "\$0 = $0"
 echo "\$# = $#"
 echo "\$* = $*"
@@ -504,8 +487,7 @@ echo "\$12 = ${12}"
 
 - 进一步了解\$*和​\$@的区别
 
-`$*`：将变量看成一个整体
-`$@`：变量是独立的
+  `$*`：将变量看成一个整体			`$@`：变量是独立的
 
 ```powershell
 #!/bin/bash
@@ -513,9 +495,7 @@ for i in "$*"
 do
 	echo $i
 done
-
-echo "=====我是分割线====="
-
+echo "=========="
 for i in "$@"
 do
 	echo $i
@@ -523,7 +503,7 @@ done
 
 [root@MissHou ~]# bash 3.sh a b c
 a b c
-=====我是分割线=====
+==========
 a
 b
 c
@@ -531,7 +511,7 @@ c
 
 # 三、简单四则运算
 
-算术运算：默认情况下，shell就只能支持简单的整数运算
+算术运算：默认情况下，shell只能支持简单的整数运算
 
 运算内容：加(+)、减(-)、乘(*)、除(/)、求余数（%）
 
@@ -595,7 +575,7 @@ declare -a array
 
 #### ①普通数组赋值
 
-- 一次赋予一个值
+- 一次赋一个值
 
 ```powershell
 数组名[索引下标]=值
@@ -605,7 +585,7 @@ array[2]=v3
 array[3]=v4
 ```
 
-- 一次赋予多个值
+- 一次赋多个值
 
 ```powershell
 数组名=(值1 值2 值3 ...)
@@ -615,11 +595,12 @@ array1=(`cat /etc/passwd`)			# 将文件中每一行赋值给数组
 array2=($(ls /root))
 array3=(harry amy jack "Miss Hou")
 array4=(1 2 3 4 "hello world" [10]=linux)  # 注意最后一个元素的写法
+array5=([1]=windows [2]=linux [3]=macos)
 ```
 
 - 查看普通数组
 
-```
+```powershell
 [root@MissHou ~]# declare -a
 ```
 
@@ -628,11 +609,11 @@ array4=(1 2 3 4 "hello world" [10]=linux)  # 注意最后一个元素的写法
 ```powershell
 ${数组名[元素下标]}
 
-echo ${array[0]}			获取数组里第一个元素
-echo ${array[*]}			获取数组里的所有元素
-echo ${#array[*]}			获取数组里所有元素个数
-echo ${!array[@]}    	获取数组中所有元素的索引下标
-echo ${array[@]:1:2}  访问指定的元素: 1代表从下标为1的元素开始获取，2代表获取后面几个元素
+echo ${array[0]}			# 获取数组中的第一个元素
+echo ${array[*]}			# 获取数组中的所有元素
+echo ${#array[*]}			# 获取数组中元素的个数
+echo ${!array[@]}    	# 获取数组中所有元素的索引下标
+echo ${array[@]:1:2}  # 访问指定的元素: 1代表从下标为1的元素开始获取，2代表获取后面几个元素
 ```
 
 ### ㈣ 关联数组定义
@@ -640,7 +621,6 @@ echo ${array[@]:1:2}  访问指定的元素: 1代表从下标为1的元素开始
 #### ①声明关联数组
 ```powershell
 declare -A asso_array1
-declare -A asso_array2
 ```
 
 #### ② 关联数组赋值
@@ -664,13 +644,12 @@ declare -A asso_array2
 
 ```powershell
 # declare -A
-declare -A asso_array1='([php]="three" [java]="two" [linux]="one" )'
-declare -A asso_array2='([name3]="amy" [name2]="jack" [name1]="harry" [name4]="Miss Hou" )'
 ```
 
 - 获取关联数组值
 
 ```powershell
+# declare -A asso_array1='([php]="three" [java]="two" [linux]="one" )'
 # echo ${asso_array1[linux]}
 one
 # echo ${asso_array1[php]}
@@ -681,6 +660,8 @@ three two one
 php java linux
 # echo ${#asso_array1[*]}
 3
+
+# declare -A asso_array2='([name3]="amy" [name2]="jack" [name1]="harry" [name4]="Miss Hou" )'
 # echo ${#asso_array2[*]}
 4
 # echo ${!asso_array2[*]}
@@ -693,10 +674,10 @@ name3 name2 name1 name4
 [root@MissHou shell05]# declare -A books
 [root@MissHou shell05]# let books[linux]++
 [root@MissHou shell05]# declare -A | grep books
-declare -A books='([linux]="1" )'
+declare -A books='([linux]="1")'
 [root@MissHou shell05]# let books[linux]++
 [root@MissHou shell05]# declare -A | grep books
-declare -A books='([linux]="2" )'
+declare -A books='([linux]="2")'
 ```
 
 
@@ -717,55 +698,60 @@ mem.txt
 
 - 变量"内容"的删除
 
-- ```
-  一个“#”代表从左往右去掉删除
-  两个“##”代表从左往右去掉最多
-  一个“%”代表从右往左删除
-  两个“%%”代表从右往左去掉最多
-  ```
+```
+一个“#”代表从左往右去掉删除
+两个“##”代表从左往右去掉最多
+一个“%”代表从右往左删除
+两个“%%”代表从右往左去掉最多
+```
 
-  举例说明：
+举例说明：
 
 ```powershell
-# url=www.taobao.com
-# echo ${#url}		     # 获取变量的长度
-# echo ${url#*.}
-# echo ${url##*.}
-# echo ${url%.*}
-# echo ${url%%.*}
+[root@MissHou shell05]# url=www.taobao.com
+[root@MissHou shell05]# echo ${#url}		     # 获取变量的长度
+14
+[root@MissHou shell05]# echo ${url#*.}
+taobao.com
+[root@MissHou shell05]# echo ${url##*.}
+com
+[root@MissHou shell05]# echo ${url%.*}
+www.taobao
+[root@MissHou shell05]# echo ${url%%.*}
+www
 ```
 
 - 变量内容的替换
 
 ```powershell
 替换：/ 和 //
- 1015  echo ${url/ao/AO}    用AO代替ao（从左往右第一个）
- 1017  echo ${url//ao/AO}   贪婪替换（替代所有）
+echo ${url/ao/AO}    用AO代替ao（从左往右第一个）
+echo ${url//ao/AO}   贪婪替换（替代所有）
  
 替代： - 和 :-  +和:+
- 1019  echo ${abc-123}
- 1020  abc=hello
- 1021  echo ${abc-444}
- 1022  echo $abc
- 1024  abc=
- 1025  echo ${abc-222}
+echo ${abc-123}
+abc=hello
+echo ${abc-444}
+echo $abc
+abc=
+echo ${abc-222}
 
 ${变量名-新的变量值} 或者 ${变量名=新的变量值}
 变量没有被赋值：会使用“新的变量值“ 替代
 变量有被赋值（包括空值）：不会被替代
 
- 1062  echo ${ABC:-123}
- 1063  ABC=HELLO
- 1064  echo ${ABC:-123}
- 1065  ABC=
- 1066  echo ${ABC:-123}
+echo ${ABC:-123}
+ABC=HELLO
+echo ${ABC:-123}
+ABC=
+echo ${ABC:-123}
 
 ${变量名:-新的变量值} 或者 ${变量名:=新的变量值}
 变量没有被赋值或者赋空值：会使用“新的变量值“ 替代
 变量有被赋值： 不会被替代
 
- 1116  echo ${abc=123}
- 1118  echo ${abc:=123}
+echo ${abc=123}
+echo ${abc:=123}
 
 [root@MissHou ~]# unset abc
 [root@MissHou ~]# echo ${abc:+123}

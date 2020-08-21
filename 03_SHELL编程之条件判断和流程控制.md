@@ -9,13 +9,11 @@
 
 # 一、条件判断语法结构
 
-**思考：何为真(true)？何为假(false)？**
-
 ##1. 条件判断语法格式
 
 - 格式1： test 条件表达式
 - 格式2： [ 条件表达式 ]   
-- 格式3： [[ 条件表达式 ]]     格式3支持正则
+- 格式3： [[ 条件表达式 ]]     格式3支持正则表达式
 
 **特别说明：**
 
@@ -23,7 +21,7 @@
 
 2）[[  亲亲，我两边都有空格，不空打死你呦  ]] :imp:
 
-3)  更多判断，`man test`去查看，很多的参数都用来进行条件判断
+3)  更多判断，可使用`man test`查看，很多的参数都用来进行条件判断
 
 ## 2. 条件判断相关参数
 
@@ -97,10 +95,10 @@ test -e file							# 只要文件存在条件为真
 
 ### ㈥ 多重条件判断
 
-| 判断符号   | 含义   | 举例                                                  |
-| ---------- | ------ | ----------------------------------------------------- |
-| -a 和 &&   | 逻辑与 | [ 1 -eq 1 -a 1 -ne 0 ]     [ 1 -eq 1 ] && [ 1 -ne 0 ] |
-| -o 和 \|\| | 逻辑或 | [ 1 -eq 1 -o 1 -ne 1 ]                                |
+| 判断符号   | 含义   | 举例                                                     |
+| ---------- | ------ | -------------------------------------------------------- |
+| -a 和 &&   | 逻辑与 | [ 1 -eq 1 -a 1 -ne 0 ]     [ 1 -eq 1 ] && [ 1 -ne 0 ]    |
+| -o 和 \|\| | 逻辑或 | [ 1 -eq 1 -o 1 -ne 1 ]      [ 1 -eq 1 ] \|\| [ 1 -ne 1 ] |
 
 **特别说明：**
 
@@ -108,7 +106,7 @@ test -e file							# 只要文件存在条件为真
 
 ||	 前面的表达式为假，才会执行后面的代码
 
-;	 只用于分割命令或表达式
+;	 只用于分割命令或表达式，即，不论前面的表达式为真还是为假都会执行后面的代码
 
 #### ① 举例说明
 
@@ -116,18 +114,20 @@ test -e file							# 只要文件存在条件为真
 
 ```powershell
 [root@server ~]# [ $(id -u) -eq 0 ] && echo "the user is admin"
-[root@server ~]$ [ $(id -u) -ne 0 ] && echo "the user is not admin"
-[root@server ~]$ [ $(id -u) -eq 0 ] && echo "the user is admin" || echo "the user is not admin"
+the user is admin
+[root@server ~]# [ $(id -u) -ne 0 ] && echo "the user is not admin"
+[root@server ~]# [ $(id -u) -eq 0 ] && echo "the user is admin" || echo "the user is not admin"
+the user is admin
 
 [root@server ~]# uid=`id -u`
-[root@server ~]# test $uid -eq 0 && echo this is admin
+[root@server ~]# test $uid -eq 0 && echo "this is admin"
 this is admin
-[root@server ~]# [ $(id -u) -ne 0 ]  || echo this is admin
+[root@server ~]# [ $(id -u) -ne 0 ] || echo "this is admin"
 this is admin
-[root@server ~]# [ $(id -u) -eq 0 ]  && echo this is admin || echo this is not admin
+[root@server ~]# [ $(id -u) -eq 0 ] && echo "this is admin" || echo "this is not admin"
 this is admin
 [root@server ~]# su - stu1
-[stu1@server ~]$ [ $(id -u) -eq 0 ]  && echo this is admin || echo this is not admin
+[stu1@server ~]# [ $(id -u) -eq 0 ] && echo "this is admin" || echo "this is not admin"
 this is not admin
 ```
 
@@ -136,15 +136,15 @@ this is not admin
 ```powershell
 注意：在(( ))中，=表示赋值；==表示判断
 
-[root@server ~]# ((1==2));echo $?
-[root@server ~]# ((1<2));echo $?
-[root@server ~]# ((2>=1));echo $?
-[root@server ~]# ((2!=1));echo $?
-[root@server ~]# ((`id -u`==0));echo $?
+[root@server ~]# ((1==2)); echo $?
+[root@server ~]# ((1<2)); echo $?
+[root@server ~]# ((2>=1)); echo $?
+[root@server ~]# ((2!=1)); echo $?
+[root@server ~]# ((`id -u`==0)); echo $?
  
-[root@server ~]# ((a=123));echo $a
+[root@server ~]# ((a=123)); echo $a
 [root@server ~]# unset a
-[root@server ~]# ((a==123));echo $?
+[root@server ~]# ((a==123)); echo $?
 ```
 
 - 字符串比较
@@ -152,59 +152,54 @@ this is not admin
 ```powershell
 注意：双引号引起来，看作一个整体；= 和 == 在 [ 字符串 ] 比较中都表示判断
 
-[root@server ~]# a='hello world';b=world
-[root@server ~]# [ $a = $b ];echo $?
-[root@server ~]# [ "$a" = "$b" ];echo $?
-[root@server ~]# [ "$a" != "$b" ];echo $?
-[root@server ~]# [ "$a" !== "$b" ];echo $?        错误
-[root@server ~]# [ "$a" == "$b" ];echo $?
-[root@server ~]# test "$a" != "$b";echo $?
+[root@server ~]# a='hello world'; b='world'
+[root@server ~]# [ $a = $b ]; echo $?
+[root@server ~]# [ "$a" = "$b" ]; echo $?
+[root@server ~]# [ "$a" != "$b" ]; echo $?
+[root@server ~]# [ "$a" !== "$b" ]; echo $?        错误
+[root@server ~]# [ "$a" == "$b" ]; echo $?
+[root@server ~]# test "$a" != "$b"; echo $?
 
 test  表达式
 [ 表达式 ]
-[[ 表达式 ]]h
+[[ 表达式 ]]
 
 思考：[ ] 和 [[ ]] 有什么区别？
 
 [root@server ~]# a=
-[root@server ~]# test -z $a;echo $?
+[root@server ~]# test -z $a; echo $?
+0
 [root@server ~]# a=hello
-[root@server ~]# test -z $a;echo $?
-[root@server ~]# test -n $a;echo $?
-[root@server ~]# test -n "$a";echo $?
-
-# [ '' = $a ];echo $?
--bash: [: : unary operator expected
-2
-# [[ '' = $a ]];echo $?
+[root@server ~]# test -z $a; echo $?
+[root@server ~]# test -n $a; echo $?
+0
+[root@server ~]# test -n "$a"; echo $?  空字符串
 0
 
-[root@server ~]# [ 1 -eq 0 -a 1 -ne 0 ];echo $?
-[root@server ~]# [ 1 -eq 0 && 1 -ne 0 ];echo $?
-[root@server ~]# [[ 1 -eq 0 && 1 -ne 0 ]];echo $?
+[root@server ~]# [ '' = $a ]; echo $?
+-bash: [: : unary operator expected
+2
+[root@server ~]# [[ '' = $a ]]; echo $?
+0
+
+[root@server ~]# [ 1 -eq 0 -a 1 -ne 0 ]; echo $?
+[root@server ~]# [ 1 -eq 0 ] && [ 1 -ne 0 ]; echo $?
+[root@server ~]# [[ 1 -eq 0 && 1 -ne 0 ]]; echo $?
 ```
 
 #### ② 逻辑运算符总结
 
-1. 符号;和&&和||都可以用来分割命令或者表达式
-2. 分号（;）完全不考虑前面的语句是否正确执行，都会执行;号后面的内容
+1. ;  &&  || 都可以用于分割命令或者表达式
+2. ; 完全不考虑前面的语句是否正确执行，都会执行后面的内容
 3. `&&`符号，需要考虑&&前面的语句的正确性，前面语句正确执行才会执行&&后的内容；反之亦然
 4. `||`符号，需要考虑||前面的语句的非正确性，前面语句执行错误才会执行||后内容；反之亦然
-5. 如果&&和||一起出现，从左往右依次看，按照以上原则
+5. 如果 && 和 || 一起出现，从左往右依次执行，也就是说 shell 没有优先级和结合性
 
 # 二、流程控制语句
-
-**关键词：选择（人生漫漫长路，我该何去何从:vertical_traffic_light:）**
 
 ## 1. 基本语法结构
 
 ### ㈠ if结构
-
-**箴言1：只要正确，就要一直向前冲:v:**
-
-**F** : 表示false，为假
-
-**T** : 表示true，为真
 
 ```powershell
 if test condition; then
@@ -219,7 +214,7 @@ if [[ condition ]]; then
 	commands
 fi
 
-[ condition ] && command
+[ condition ] && commands
 ```
 
 ### ㈡ if...else结构
@@ -228,86 +223,68 @@ fi
 
 ```powershell
 if [ condition ]; then
-		command1
+		commands
 else
-		command2
+		commands
 fi
 
-[ 条件 ] && command1 || command2
+[ condition ] && commands || commands
 ```
 
 **小试牛刀：**
 
-让用户自己输入字符串，如果用户输入的是hello，请打印world，否则打印“请输入hello”
+让用户自己输入字符串，如果用户输入的是hello，打印world，否则打印“请输入hello”
 
 1. `read定义变量`
-2. if....else...
+2. `if....else…`
 
 ```powershell
 #!/bin/env bash
-
-read -p '请输入一个字符串:' str
-if [ "$str" = 'hello' ]; then
-    echo 'world'
+read -p "请输入一个字符串: " str
+if [ "$str" = "hello" ]; then
+    echo "world"
 else
-    echo '请输入hello!'
+    echo "请输入hello!"
 fi
 
-  1 #!/bin/env bash
-  2
-  3 read -p "请输入一个字符串:" str
-  4 if [ "$str" = "hello" ]
-  5 then
-  6     echo world
-  7 else
-  8     echo "请输入hello!"
-  9 fi
-  
-  echo "该脚本需要传递参数"
-  1 if [ "$1" = "hello" ]; then
-  2     echo "hello"
-  3 else
-  4     echo "请输入hello"
-  5 fi
+read -p "请输入一个字符串: " str;
+[ "$str" = "hello" ] && echo "hello" || echo "请输入hello!"
+
 
 #!/bin/env bash
+echo "该脚本需要传递参数..."
+if [ "$1" = "hello" ]; then
+    echo "hello"
+else
+    echo "请输入hello!"
+fi
 
+#!/bin/env bash
 A=hello
 B=world
-C=hello
 
 if [ "$1" = "$A" ]; then
     echo "$B"
 else
-    echo "$C"
+    echo "请输入$C!"
 fi
-
-read -p '请输入一个字符串:' str;
-[ "$str" = 'hello' ] && echo 'world' ||  echo '请输入hello!'
 ```
 
 
 
 ### ㈢ if...elif...else结构
 
-**箴言3：选择很多，能走的只有一条**
-
 ```powershell
-if [ condition1 ];then
-		command1  	结束
-elif [ condition2 ];then
-		command2   	结束
+if [ condition1 ]; then
+		commands
+elif [ condition2 ]; then
+		commands
 else
-		command3
+		commands
 fi
-
-注释：
-如果条件1满足，执行命令1后结束；如果条件1不满足，再看条件2，如果条件2满足执行命令2后结束；如果条件1和条件2都不满足执行命令3结束.
 ```
 
 ### ㈣ 层层嵌套结构
-
-**箴言4：多次判断，带你走出人生迷雾。**
 
 ```powershell
 if [ condition1 ]; then
@@ -324,23 +301,17 @@ if [ condition1 ]; then
 			command5
 		fi
 fi
-
-注释：
-如果条件1满足，执行命令1；如果条件2也满足执行命令2，如果不满足就只执行命令1结束；
-如果条件1不满足，不看条件2；直接看条件3，如果条件3满足执行命令3；如果不满足则看条件4，如果条件4满足执行命令4；否则执行命令5
 ```
 
 ## 2. 应用案例
 
-### ㈠ 判断两台主机是否ping通
-
-**需求：**判断当前主机是否和远程主机是否ping通
+### ㈠ 判断两台主机是否能够ping通
 
 #### ① 思路
 
-1. 使用哪个命令实现  `ping -c次数`
-2. 根据命令的执行结果状态来判断是否通`$?`
-3. 根据逻辑和语法结构来编写脚本(条件判断或者流程控制)
+1. 使用哪个命令实现  `ping -c次数 IP地址`
+2. 根据命令的执行结果状态来判断是否ping通`$?`
+3. 根据逻辑和语法结构来编写脚本（条件判断或者流程控制）
 
 #### ② 落地实现
 
@@ -348,20 +319,18 @@ fi
 #!/bin/env bash
 # 该脚本用于判断当前主机是否和远程指定主机互通
 
-# 交互式定义变量，让用户自己决定ping哪个主机
-read -p "请输入你要ping的主机的IP:" ip
-
-# 使用ping程序判断主机是否互通
-ping -c1 $ip &>/dev/null
-
+read -p "请输入你要ping的主机的IP: " ip  # 交互式定义变量，让用户自己决定ping哪个主机
+ping -c1 $ip &> /dev/null  # 使用ping程序判断主机是否互通
 if [ $? -eq 0 ]; then
 	echo "当前主机和远程主机$ip是互通的"
 else
- 	echo "当前主机和远程主机$ip不通的"
+ 	echo "当前主机和远程主机$ip不通"
 fi
 
-逻辑运算符
-test $? -eq 0 &&  echo "当前主机和远程主机$ip是互通的" || echo "当前主机和远程主机$ip不通的"
+或者
+read -p "请输入你要ping的主机的IP: " ip  # 交互式定义变量，让用户自己决定ping哪个主机
+ping -c1 $ip &> /dev/null  # 使用ping程序判断主机是否互通
+test $? -eq 0 &&  echo "当前主机和远程主机$ip是互通的" || echo "当前主机和远程主机$ip不通"
 ```
 
 ### ㈡ 判断一个进程是否存在
@@ -379,7 +348,7 @@ test $? -eq 0 &&  echo "当前主机和远程主机$ip是互通的" || echo "当
 ```powershell
 #!/bin/env bash
 # 判断一个程序(httpd)的进程是否存在
-pgrep httpd &>/dev/null
+pgrep httpd &> /dev/null
 if [ $? -ne 0 ]; then
 	echo "当前httpd进程不存在"
 else
@@ -387,6 +356,7 @@ else
 fi
 
 或者
+pgrep httpd &> /dev/null
 test $? -eq 0 && echo "当前httpd进程存在" || echo "当前httpd进程不存在"
 ```
 
@@ -395,13 +365,13 @@ test $? -eq 0 && echo "当前httpd进程存在" || echo "当前httpd进程不存
 ```powershell
 pgrep命令：以名称为依据从运行进程队列中查找进程，并显示查找到的进程id
 选项
--o：仅显示找到的最小（起始）进程号;
--n：仅显示找到的最大（结束）进程号；
--l：显示进程名称；
--P：指定父进程号；pgrep -p 4764  查看父进程下的子进程id
--g：指定进程组；
--t：指定开启进程的终端；
--u：指定进程的有效用户ID。
+  -o：仅显示找到的最小（起始）进程号;
+  -n：仅显示找到的最大（结束）进程号；
+  -l：显示进程名称；
+  -P：指定父进程号；pgrep -p 4764  查看父进程下的子进程id
+  -g：指定进程组；
+  -t：指定开启进程的终端；
+  -u：指定进程的有效用户ID。
 ```
 
 ### ㈢ 判断一个服务是否正常
@@ -420,10 +390,8 @@ pgrep命令：以名称为依据从运行进程队列中查找进程，并显示
 #!/bin/env bash
 # 判断门户网站是否能够正常提供服务
 
-#定义变量
 web_server=www.itcast.cn
-#访问网站
-wget -P /shell/ $web_server &>/dev/null
+wget -P /shell/ $web_server &> /dev/null  #访问网站
 [ $? -eq 0 ] && echo "当前网站服务是ok" && rm -f /shell/index.* || echo "当前网站服务不ok，请立刻处理"
 ```
 
@@ -434,63 +402,46 @@ wget -P /shell/ $web_server &>/dev/null
 **需求1：**输入一个用户，用脚本判断该用户是否存在
 
 ```powershell
- #!/bin/env bash
-  2 read -p "请输入一个用户名：" user_name
-  3 id $user_name &>/dev/null
-  4 if [ $? -eq 0 ]; then
-  6     echo "该用户存在！"
-  7 else
-  8     echo "用户不存在！"
-  9 fi
-  
-  
-#!/bin/bash
-# 判断 用户（id） 是否存在
-read -p "输入壹个用户：" id
-id $id &> /dev/null
+#!/bin/env bash
+read -p "请输入一个用户名: " user_name
+id $user_name &> /dev/null
 if [ $? -eq 0 ]; then
-    echo "该用户存在"
+    echo "用户$user_name存在！"
 else
-    echo "该用户不存在"
+    echo "用户$user_name不存在！"
 fi
 
 #!/bin/env bash
-read -p "请输入你要查询的用户名:" username
-grep -w $username /etc/passwd &>/dev/null
-if [ $? -eq 0 ]
-then
-    echo "该用户已存在"
+read -p "请输入你要查询的用户名: " user_name
+grep -w $user_name /etc/passwd &> /dev/null
+if [ $? -eq 0 ]; then
+    echo "用户$user_name存在！"
 else
-    echo "该用户不存在"
+    echo "用户$user_name不存在！"
 fi
 
 #!/bin/bash
-read -p "请输入你要检查的用户名：" name
-id $name &>/dev/null
-if [ $? -eq 0 ]
-then
-echo 用户"$name"已经存在
+read -p "请输入你要检查的用户名: " user_name
+id $user_name &> /dev/null
+if [ $? -eq 0 ]; then
+		echo "用户$user_name存在!"
 else
-echo 用户"$name"不存在
+		echo "用户$user_name不存在!"
 fi
 
 #!/bin/env bash
-#判断用户是否存在
-read -p "请写出用户名" id
-id $id
-if [ $? -eq 0 ];then
-        echo "用户存在"
+read -p "请输入要查询的用户名: " user_name
+id $user_name
+if [ $? -eq 0 ]; then
+		echo "用户$user_name存在"
 else
-        echo "用户不存在"
+		echo "用户$user_name不存在"
 fi
 
 #!/bin/env bash
-read -p '请输入用户名:' username
-id $username &>/dev/null
-[ $? -eq 0 ] && echo '用户存在' || echo '不存在'
-
-
-
+read -p '请输入用户名: ' user_name
+id $user_name &>/dev/null
+[ $? -eq 0 ] && echo '用户$user_name存在' || echo '用户$user_name不存在'
 ```
 
 ### ㈡ 判断软件包是否安装
@@ -514,11 +465,13 @@ id $username &>/dev/null
 
 #!/bin/bash
 kernel=`uname -r`
-var1=`echo $kernel|cut -d. -f1`
-var2=`echo $kernel|cut -d. -f2`
+var1=`echo $kernel | cut -d. -f1`
+var2=`echo $kernel | cut -d. -f2`
 test $var1 -eq 2 -a $var2 -ge 6 && echo $kernel || echo "当前内核版本不符合要求"
 或者
 [ $var1 -eq 2 -a $var2 -ge 6 ] && echo $kernel || echo "当前内核版本不符合要求"
+或者
+[ $var1 -eq 2 ] && [ $var2 -ge 6 ] && echo $kernel || echo "当前内核版本不符合要求"
 或者
 [[ $var1 -eq 2 && $var2 -ge 6 ]] && echo $kernel || echo "当前内核版本不符合要求"
 
@@ -528,6 +481,6 @@ kernel=`uname -r`
 test ${kernel:0:1} -eq 2 -a ${kernel:2:1} -ge 6 && echo $kernel || echo '不符合要求'
 
 其他命令参考：
-uname -r|grep ^2.[6-9] || echo '不符合要求'
+uname -r | grep ^2.[6-9] || echo '不符合要求'
 ```
 

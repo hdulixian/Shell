@@ -19,14 +19,14 @@
 
 ```powershell
 for variable in {list}
-     do
-          commands
-     done
+do
+		commands
+done
 或者
 for variable in a b c
-     do
-         commands
-     done
+do
+		commands
+done
 ```
 
 - **举例说明**
@@ -52,9 +52,9 @@ for var in $(seq 10 -2 1); do echo $var; done
 
 ```powershell
 for variable
-	do
-        commands
-	done
+do
+		commands
+done
 ```
 
 - **举例说明**
@@ -62,9 +62,9 @@ for variable
 ```powershell
 #!/bin/env bash
 for var
-	do
-		echo $var
-	done
+do
+	echo $var
+done
 echo "脚本后面有$#个参数"
 ```
 
@@ -74,19 +74,19 @@ echo "脚本后面有$#个参数"
 
 ```powershell
 for (( expr1;expr2;expr3 ))
-	do
-		commands
-	done
+do
+	commands
+done
 
 其中：
-expr1：定义变量并赋初值
-expr2：决定是否进行循环（条件）
-expr3：决定循环变量如何改变，决定循环什么时候退出
+  expr1：定义变量并赋初值
+  expr2：决定是否进行循环（条件）
+  expr3：决定循环变量如何改变，决定循环什么时候退出
 如：
 for (( i=1;i<=5;i++))
-	do
-		echo $i
-	done
+do
+	echo $i
+done
 ```
 
 - **举例说明**
@@ -112,68 +112,73 @@ for (( i=1;i<=5;i++))
 
 ```powershell
 #!/bin/env bash
-# 计算1-100的奇数和
-
 sum=0 # 定义变量来保存奇数和
 # for循环遍历1-100的奇数，并且相加，把结果重新赋值给sum
 for i in {1..100..2}
-	do
-		let sum=$sum+$i
-	done
-echo "1-100的奇数和为:$sum" # 打印所有奇数的和
+do
+	let sum=$sum+$i
+done
+echo "1-100的奇数和为: $sum" # 打印所有奇数的和
 
 
 方法1：
 #!/bin/bash
 sum=0
 for i in {1..100..2}
-	do
-		sum=$[$i+$sum]
-	done
-echo "1-100的奇数和为:$sum"
+do
+	sum=$[$i+$sum]
+done
+echo "1-100的奇数和为: $sum"
 
 方法2：
 #!/bin/bash
 sum=0
 for ((i=1;i<=100;i+=2))
-	do
-		let sum=$i+$sum
-	done
-echo "1-100的奇数和为:$sum"
+do
+	let sum=$i+$sum
+done
+echo "1-100的奇数和为: $sum"
 
 方法3：
 #!/bin/bash
 sum=0
 for ((i=1;i<=100;i++))
-	do
-		if [ $[$i%2] -ne 0 ]; then
-			let sum=$sum+$i
-		fi
+do
+	if [ $[$i%2] -ne 0 ]; then
+		let sum=$sum+$i
+	fi
 done
-或者
-test $[$i%2] -ne 0 && let sum=$sum+$i
+echo "1-100的奇数和为: $sum"
 
-echo "1-100的奇数和为:$sum"
+方法3-1：
+#!/bin/bash
+sum=0
+for ((i=1;i<=100;i++))
+do
+	test $[$i%2] -ne 0 && let sum=$sum+$i
+done
+echo "1-100的奇数和为: $sum"
 
 方法4：
 sum=0
 for ((i=1;i<=100;i++))
-	do
-		if [ $[$i%2] -eq 0 ]; then
-			continue
-		else
-			let sum=$sum+$i
-		fi
-	done
-echo "1-100的奇数和为:$sum"
+do
+	if [ $[$i%2] -eq 0 ]; then
+		continue
+	else
+		let sum=$sum+$i
+	fi
+done
+echo "1-100的奇数和为: $sum"
 
+方法4-1：
 #!/bin/bash
 sum=0
 for ((i=1;i<=100;i++))
-	do
-		test $[$i%2] -eq 0 && continue || let sum=sum+$i
-	done
-echo "1-100的奇数和是:$sum"
+do
+	test $[$i%2] -eq 0 && continue || let sum=sum+$i
+done
+echo "1-100的奇数和是: $sum"
 ```
 
 #### ③ 循环控制语句
@@ -186,9 +191,9 @@ echo "1-100的奇数和是:$sum"
 [root@server ~]# cat for5.sh 
 #!/bin/bash
 for i in {1..5}
-	do
-		test $i -eq 2 && break || touch /tmp/file$i
-	done
+do
+	test $i -eq 2 && break || touch /tmp/file$i
+done
 echo hello hahahah
 ```
 
@@ -212,10 +217,10 @@ read -p "请输入一个正整数: " number
 [ $number -eq 2 ] && echo "$number是质数" && exit
 
 for i in `seq 2 $[$number-1]`
-	do
+do
 	 [ $[$number%$i] -eq 0 ] && echo "$number不是质数" && exit
-	done
-echo "$number是质数" && exit
+done
+echo "$number是质数"
 
 -----------------------------------------------------------------------------
 
@@ -225,11 +230,11 @@ read -p "输入一个正整数: " number
 [ $number -eq 2 ] && echo "${number}是质数" && exit
 
 for i in $(seq 2 $[number-1])
-	do
-		if [ $[number%i] -eq 0 ]; then
-			echo "${number}不是质数" && exit
-		fi
-	done
+do
+	if [ $[number%i] -eq 0 ]; then
+		echo "${number}不是质数" && exit
+	fi
+done
 echo "${number}是质数"
 ```
 
@@ -250,7 +255,7 @@ useradd或adduser命令可用于创建用户帐号。
 语法格式：
 
 ```powershell
-useradd [-d home] [-s shell] [-c comment] [-m [-k template]] [-f inactive] [-e expire] [-p passwd] [-r] name
+useradd [-d home] [-s shell] [-c comment] [-m [-k template]] [-f inactive] [-e expire] [-p passwd] [-r] [username]
 ```
 
 参数选项：
@@ -274,17 +279,15 @@ useradd [-d home] [-s shell] [-c comment] [-m [-k template]] [-f inactive] [-e e
 代码实现：
 
 ```powershell
-方法一：
 #!/bin/bash
 # 判断class组是否存在
 grep -w class /etc/group &> /dev/null
 [ $? -ne 0 ] && groupadd class
-# 批量创建用户
-for i in {1..5}
-	do
-		useradd -G class u$i
-		echo 123 | passwd --stdin u$i  # --stdin表示接受echo后面的字符串作为密码
-	done
+for i in {1..5}  # 批量创建用户
+do
+	useradd -G class u$i
+	echo 123 | passwd --stdin u$i  # --stdin表示接受echo后面的字符串作为密码
+done
 ```
 
 ## 3. 课堂练习
@@ -295,15 +298,12 @@ for i in {1..5}
 
 ```powershell
 #!/bin/bash
-# 判断/rhome是否存在
-[ -f /rhome ] && mv /rhome /rhome.bak
 test ! -d /rhome && mkdir /rhome
-
 for ((i=1;i<=5;i++))
-	do
-		useradd -d /rhome/u$i u$i
-		echo 123 | passwd --stdin u$i
-	done
+do
+	useradd -d /rhome/u$i u$i
+	echo 123 | passwd --stdin u$i
+done
 ```
 
 ### ㈡ 局域网内脚本检查主机网络通讯
@@ -316,36 +316,36 @@ for ((i=1;i<=5;i++))
 #!/bin/bash
 IP=10.1.1
 for ((i=1;i<=10;i++))
-  do
-    ping -c1 $IP.$i &> /dev/null
-    if [ $? -eq 0 ]; then
-      echo "$IP.$i is ok" >> /tmp/1.txt
-    else
-      echo "$IP.$i is down" >> /tmp/2.txt
-    fi
-    或者
-    [ $? -eq 0 ] && echo "$IP.$i is ok" >> /tmp/1.txt || echo "$IP.$i is down" >> /tmp/2.txt
-  done
+do
+	ping -c1 $IP.$i &> /dev/null
+  if [ $? -eq 0 ]; then
+    echo "$IP.$i is ok" >> /tmp/1.txt
+	else
+		echo "$IP.$i is down" >> /tmp/2.txt
+  fi
+  或者
+  [ $? -eq 0 ] && echo "$IP.$i is ok" >> /tmp/1.txt || echo "$IP.$i is down" >> /tmp/2.txt
+done
 ```
 
 **延伸扩展：shell脚本并发**
 
 ```powershell
-{commands}&表示将程序放到后台并行执行，如果需要等待后台程序执行完毕再执行后续的命令，需要加wait
+{commands}& 表示将程序放到后台并行执行，如果需要等待后台程序执行完毕再执行后续的命令，需要加wait
 
 #!/bin/bash
 IP=10.1.1
 for ((i=1;i<=10;i++))
-	do
-	{
-        ping -c1 $IP.$i &> /dev/null
-        if [ $? -eq 0 ]; then
-						echo "$IP.$i is ok" >> /tmp/ip_up.txt
-        else
-						echo "$IP.$i is down" >> /tmp/ip_down.txt
-        fi
-	}&
-	done
+do
+  {
+    ping -c1 $IP.$i &> /dev/null
+    if [ $? -eq 0 ]; then
+      echo "$IP.$i is ok" >> /tmp/ip_up.txt
+    else
+      echo "$IP.$i is down" >> /tmp/ip_down.txt
+    fi
+  }&
+done
 wait
 echo "done..."
 ```
@@ -385,30 +385,30 @@ fi
 
 ~~~powershell
 while condition
-	do
-		commands
-	done
+do
+	commands
+done
 如：
 while  [ 1 -eq 1 ] 或者 (( 1 > 2 ))
-  do
-     commands
-	done
+do
+  commands
+done
 ~~~
 
-**循环打印1-5数字**
+**循环打印数字1-5**
 
 ```powershell
 for ((i=1;i<=5;i++))
-	do
-		echo $i
-	done
+do
+	echo $i
+done
 
 i=1
 while [ $i -le 5 ]
-	do
-		echo $i
-		let i++
-	done
+do
+	echo $i
+	let i++
+done
 ```
 
 ## 2. 应用案例
@@ -420,10 +420,10 @@ while [ $i -le 5 ]
 sum=0
 i=2
 while [ $i -le 50 ]
-  do
-    let sum=sum+i
-    let i+=2
-  done
+do
+	let sum+=i
+	let i+=2
+done
 echo "1-50的偶数和为: $sum"
 ~~~
 
@@ -432,12 +432,12 @@ echo "1-50的偶数和为: $sum"
 #### ① 具体需求
 
 1. 写一个脚本，30秒同步一次系统时间，时间同步服务器10.1.1.1
-2. 如果同步失败，则进行邮件报警,每次失败都报警
-3. 同步成功也进行邮件通知，但是成功100次才通知一次
+2. 如果同步失败，则进行邮件报警（每次失败都报警）
+3. 同步成功也进行邮件通知（成功100次通知一次）
 
 #### ② 思路
 
-1. 每个30s同步一次时间，该脚本是一个死循环
+1. 每隔30s同步一次时间，该脚本是一个死循环
 
 2. 同步失败发送邮件
 
@@ -450,8 +450,8 @@ echo "1-50的偶数和为: $sum"
 count=0
 ntp_server=10.1.1.1
 while true
-  do
-  	# rdate -s IP_Address 表示把远程主机的日期和时间回存到本地主机的系统时间。
+do
+  	# rdate -s IP_Address 表示把远程主机的日期和时间回存到本地主机的系统时间中。
     rdate -s $ntp-server &> /dev/null
     if [ $? -ne 0 ]; then
     	# 下条命令表示发送主题为 check system date，内容为 system date failed 的邮件到 root@localhost
@@ -459,11 +459,11 @@ while true
     else
       let count++
       if [ $[$count%100] -eq 0 ]; then
-      	echo "system date successfull" | mail -s 'check system date' root@localhost && count=0
+      	echo "system date successfull" | mail -s 'check system date' root@localhost
       fi
     fi
   	sleep 30
-  done
+done
 ~~~
 
 #三、until循环
@@ -474,27 +474,27 @@ while true
 
 ```shell
 until condition  [ 1 -eq 1 ] 或 (( 1 >= 1 ))
-	do
-		commands
-	done
+do
+	commands
+done
 ```
 
-**打印1-5数字**
+**打印数字1-5**
 
 ```powershell
 i=1
 while [ $i -le 5 ]
-	do
-		echo $i
-		let i++
-	done
+do
+  echo $i
+  let i++
+done
 或者
 i=1
-until (( $i > 5 ))
-  do
-    echo $i
-    let i++
-  done
+until [ $i -gt 5 ] 或 (( $i > 5 ))
+do
+  echo $i
+  let i++
+done
 ```
 
 ## 2. 应用案例
@@ -513,7 +513,7 @@ until (( $i > 5 ))
 #!/bin/bash
 i=1
 until [ $i -gt 10 ]
-  do
+do
     if [ $i -le 5 ]; then
       useradd -u $[1000+$i] u$i && echo 123 | passwd --stdin u$i
     else
@@ -521,7 +521,7 @@ until [ $i -gt 10 ]
       useradd -d /rhome/u$i u$i && echo 123 | passwd --stdin u$i		
     fi
   	let i++
-  done
+done
 ```
 
 # 四、课后作业
